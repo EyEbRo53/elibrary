@@ -3,17 +3,17 @@ import { MdBook, MdHome } from "react-icons/md";
 export const adminSideBarLinks = [
   {
     icon: MdHome,
-    route: "/dashboard",
+    route: "/dashboard/userId",
     text: "Home",
   },
   {
     icon: MdBook,
-    route: "/dashboard/books",
+    route: "/dashboard/userId/books",
     text: "All Books",
   },
   {
     icon: MdBook,
-    route: "/dashboard/books/new",
+    route: "/dashboard/userId/books/new",
     text: "Add Books",
   },
 ];

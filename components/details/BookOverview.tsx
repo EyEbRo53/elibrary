@@ -1,4 +1,4 @@
-import BookCover from "@/components/home/BookCover";
+import BookCover from "@/components/details/BookCover";
 
 import { MdStar } from "react-icons/md";
 

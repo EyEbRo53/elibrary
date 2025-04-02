@@ -3,7 +3,15 @@ import Header from "@/components/admin/Header";
 import Sidebar from "@/components/admin/Sidebar";
 import { redirect } from "next/navigation";
 
-const DashboadLayout = async ({ children }: { children: React.ReactNode }) => {
+const DashboadLayout = async ({
+  params,
+  children,
+}: {
+  params: Promise<{ bookId: string }>;
+  children: React.ReactNode;
+}) => {
+  const id = (await params).bookId;
+
   const session = await auth();
   // if (!session?.user?.id) redirect("/sign-in");
 

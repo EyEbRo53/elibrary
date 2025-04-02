@@ -33,7 +33,11 @@ const Sidebar = ({ session }: { session: Session }) => {
             return (
               <Link href={link.route} key={link.route}>
                 <div
-                  className={cn("link", isSelected && "bg-primary shadow-sm")}
+                  className={cn(
+                    "link",
+                    isSelected &&
+                      "bg-gradient-to-br from-primary to-purple shadow-sm"
+                  )}
                 >
                   <link.icon className="size-6" />
                   <p

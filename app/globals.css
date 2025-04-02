@@ -5,10 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-primary-100: #ecfdf3;
-  --color-primary-400: #4c7b62;
-  --color-primary-500: #2cc171;
-  --color-primary-800: #027a48;
+  --color-purple: #e521f2;
   --color-dark-100: #16191e;
   --color-dark-200: #3a354e;
   --color-dark-300: #232839;
@@ -68,7 +65,7 @@
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.72 0.19 150);
+  --primary: #2249ea;
   --primary-foreground: oklch(0.984 0.003 247.858);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
@@ -104,7 +101,7 @@
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.129 0.042 264.695);
   --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.72 0.19 150);
+  --primary: #2249ea;
   --primary-foreground: oklch(0.208 0.042 265.755);
   --secondary: oklch(0.279 0.041 260.031);
   --secondary-foreground: oklch(0.984 0.003 247.858);
@@ -141,8 +138,16 @@ body {
   .root-layout {
     @apply flex blue-gradient-dark min-h-screen flex-1 flex-col px-5 sm:px-10 md:px-16;
   }
-  /* Book Details */
 
+  .hero-card {
+    @apply flex flex-col-reverse dark-gradient xl:flex-row rounded-2xl px-16 items-center justify-between;
+  }
+
+  .book-list {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2;
+  }
+
+  /* Book Details */
   .book-overview {
     @apply flex flex-col-reverse items-center xl:flex-row;
   }
