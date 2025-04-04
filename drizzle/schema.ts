@@ -4,23 +4,25 @@ import {
   text,
   integer,
   pgEnum,
-  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
 export const users = pgTable("user", {
-  id: uuid("id").notNull().primaryKey().defaultRandom().unique(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
   email: text("email"),
   image: text("image"),
+  password: text("password"),
   role: text("role").$type<"admin" | "publisher" | "user">().default("user"),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   createdAt: timestamp("createdAt").defaultNow(),
 });
 
 export const accounts = pgTable("account", {
-  userId: uuid("userId")
+  userId: text("userId")
     .references(() => users.id)
     .notNull(),
   type: text("type").$type<AdapterAccountType>().notNull(),
@@ -35,9 +37,19 @@ export const accounts = pgTable("account", {
   session_state: text("session_state"),
 });
 
+export const sessions = pgTable("session", {
+  sessionToken: text("sessionToken").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
+});
+
 export const publisher = pgTable("publisher", {
-  id: uuid("id").notNull().primaryKey().defaultRandom().unique(),
-  userId: uuid("userId")
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
     .references(() => users.id)
     .notNull(),
   name: text("name"),
@@ -48,10 +60,12 @@ export const publisher = pgTable("publisher", {
 export const STATUS_ENUM = pgEnum("status", ["free", "pro"]);
 
 export const books = pgTable("books", {
-  id: uuid("id").notNull().primaryKey().defaultRandom().unique(),
-  // userId: uuid("userId")
-  //   .references(() => users.id)
-  //   .notNull(),
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
+    .references(() => users.id)
+    .notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   genre: text("genre").notNull(),
   coverUrl: text("cover_url").notNull(),
@@ -63,11 +77,13 @@ export const books = pgTable("books", {
 });
 
 export const rating = pgTable("rating", {
-  id: uuid("id").notNull().primaryKey().defaultRandom().unique(),
-  userId: uuid("userId")
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
     .references(() => users.id)
     .notNull(),
-  bookId: uuid("bookId")
+  bookId: text("bookId")
     .references(() => books.id)
     .notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),

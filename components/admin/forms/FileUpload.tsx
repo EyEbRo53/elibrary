@@ -1,0 +1,133 @@
+import { ChangeEventHandler, useRef, useTransition } from "react";
+import { AiOutlineCloudUpload } from "react-icons/ai";
+import Image from "next/image";
+import { MdDelete } from "react-icons/md";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import { useUploadThing } from "@/lib/uploadthing";
+import { DeleteImages } from "@/actions/Uploadthing";
+import Link from "next/link";
+
+const FileUpload = ({
+  url,
+  disabled,
+  onChange,
+  type,
+}: {
+  url: string;
+  disabled: boolean;
+  onChange: (image: string | string[]) => void;
+  type: "image" | "pdf";
+}) => {
+  const filePickerRef = useRef<HTMLInputElement | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  // upload image image
+  const { startUpload, isUploading } = useUploadThing("imageUploader", {
+    onUploadError: () => {
+      toast.error("Something went wrong!");
+    },
+    onClientUploadComplete: (res) => {
+      const url = res?.[0].ufsUrl;
+      onChange(url);
+      const message = `Uploaded Successfully!`;
+      toast.success(message);
+    },
+  });
+  const addItem: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const files = e.target.files;
+
+    if (!files) {
+      toast.error("Please select your image(s)");
+      return;
+    }
+
+    const file = files?.[0];
+    startUpload([file]);
+  };
+  // delete
+  const Delete = async () => {
+    startTransition(async () => {
+      const deleted = await DeleteImages({ files: [url] });
+      // console.log(deleted);
+      if (deleted.success) {
+        onChange("");
+        toast.success("Deleted Successfully!");
+      }
+    });
+  };
+
+  // console.log(images);
+
+  return (
+    <div className="pb-4">
+      {/* upload btn */}
+      {url === "" && (
+        <Button
+          className="gap-2 w-full"
+          type="button"
+          variant="secondary"
+          disabled={disabled || pending || isUploading}
+          onClick={() => filePickerRef.current!.click()}
+        >
+          {isUploading ? (
+            <p>Uploading....</p>
+          ) : (
+            <>
+              <AiOutlineCloudUpload className="h-5 w-5" />
+              <input
+                type="file"
+                ref={filePickerRef}
+                hidden
+                accept="image/*"
+                onChange={addItem}
+              />
+              Upload
+            </>
+          )}
+        </Button>
+      )}
+      {/* Image View */}
+      {url !== "" && (
+        <div className="flex items-start space-x-2 relative">
+          <div className="absolute items-center justify-center right-0 top-2">
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              disabled={pending || disabled}
+              onClick={Delete}
+            >
+              <MdDelete className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="overflow-x-auto flex gap-1 scrollbar">
+            {type === "image" && (
+              <Image
+                src={url}
+                className="w-full h-[20%] rounded-xl max-h-40 object-contain pb-2"
+                alt={`Image ${url}`}
+                height={500}
+                width={500}
+              />
+            )}
+            {type === "pdf" && (
+              <Button
+                variant="link"
+                className="w-full rounded-xl h-40 border pb-2"
+                asChild
+              >
+                <Link href={url} target="_blank">
+                  Open Book
+                </Link>
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default FileUpload;

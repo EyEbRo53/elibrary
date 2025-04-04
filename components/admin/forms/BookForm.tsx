@@ -6,12 +6,13 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { bookSchema } from "@/lib/utils";
-import FileUpload from "@/components/global/FileUpload";
+import FileUpload from "@/components/admin/forms/FileUpload";
 import {
   Form,
   FormControl,
@@ -35,6 +36,7 @@ interface Props {
 
 const BookForm = ({ book }: Props) => {
   const router = useRouter();
+  const session = useSession();
   const [loading, setLoading] = useState(false);
 
   const defaultValues = book
@@ -47,7 +49,7 @@ const BookForm = ({ book }: Props) => {
         description: "",
         genre: "",
         coverUrl: "/cover.PNG",
-        pdfUrl: "/nextjs.pdf",
+        pdfUrl: "/next.pdf",
         summary: "",
         status: "pro" as "free" | "pro",
       };
@@ -64,7 +66,7 @@ const BookForm = ({ book }: Props) => {
       if (result.success) {
         toast.success("Book updated successfully");
         setLoading(false);
-        router.push(`/dashboard/books`);
+        router.push(`/dashboard/${session.data?.user?.id}/books`);
       } else {
         setLoading(false);
         toast.error("Something went wrong");
@@ -75,7 +77,7 @@ const BookForm = ({ book }: Props) => {
       if (result.success) {
         toast.success("Book created successfully");
         setLoading(false);
-        router.push(`/dashboard/books`);
+        router.push(`/dashboard/${session.data?.user?.id}/books`);
       } else {
         setLoading(false);
         toast.error("Something went wrong");
@@ -93,16 +95,13 @@ const BookForm = ({ book }: Props) => {
               name={"coverUrl"}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Book Image</FormLabel>
+                  <FormLabel>Book Cover</FormLabel>
                   <FormControl>
                     <FileUpload
-                      type="image"
-                      accept="image/*"
-                      placeholder="Upload a book cover"
-                      folder="books/covers"
-                      onFileChange={field.onChange}
-                      value={field.value}
+                      url={field.value}
                       disabled={loading}
+                      onChange={field.onChange}
+                      type="image"
                     />
                   </FormControl>
                   <FormMessage />
@@ -118,13 +117,10 @@ const BookForm = ({ book }: Props) => {
                   <FormLabel>Book PDF</FormLabel>
                   <FormControl>
                     <FileUpload
-                      type="image"
-                      accept="pdf/*"
-                      placeholder="Upload a book PDF"
-                      folder="books/pdf"
-                      onFileChange={field.onChange}
-                      value={field.value}
+                      url={field.value}
                       disabled={loading}
+                      onChange={field.onChange}
+                      type="pdf"
                     />
                   </FormControl>
                   <FormMessage />
@@ -169,7 +165,7 @@ const BookForm = ({ book }: Props) => {
                         <SelectValue placeholder="Select Book Status" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="border-none">
                       <SelectItem value="pro">Pro</SelectItem>
                       <SelectItem value="free">Free</SelectItem>
                     </SelectContent>

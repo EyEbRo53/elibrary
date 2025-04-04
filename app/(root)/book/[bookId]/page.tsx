@@ -9,13 +9,11 @@ const BookDetails = async ({
   const id = (await params).bookId;
 
   const books = await db.query.books.findFirst({
-    where: {
-      id: id,
-    },
+    where: (book, { eq }) => eq(book.id, id),
   });
 
   return (
-    <div>
+    <div className="mt-10">
       <BookOverview book={books!} />
     </div>
   );

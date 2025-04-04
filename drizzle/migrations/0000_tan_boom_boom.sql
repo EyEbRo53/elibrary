@@ -1,6 +1,6 @@
 CREATE TYPE "public"."status" AS ENUM('free', 'pro');--> statement-breakpoint
 CREATE TABLE "account" (
-	"userId" uuid NOT NULL,
+	"userId" text NOT NULL,
 	"type" text NOT NULL,
 	"provider" text NOT NULL,
 	"providerAccountId" text NOT NULL,
@@ -14,7 +14,8 @@ CREATE TABLE "account" (
 );
 --> statement-breakpoint
 CREATE TABLE "books" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
+	"userId" text NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"genre" text NOT NULL,
 	"cover_url" text NOT NULL,
@@ -22,39 +23,44 @@ CREATE TABLE "books" (
 	"description" text NOT NULL,
 	"summary" varchar NOT NULL,
 	"status" "status" DEFAULT 'pro',
-	"created_at" timestamp with time zone DEFAULT now(),
-	CONSTRAINT "books_id_unique" UNIQUE("id")
+	"created_at" timestamp with time zone DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE "publisher" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"userId" uuid NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
+	"userId" text NOT NULL,
 	"name" text,
 	"image" text,
-	"createdAt" timestamp DEFAULT now(),
-	CONSTRAINT "publisher_id_unique" UNIQUE("id")
+	"createdAt" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE "rating" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"userId" uuid NOT NULL,
-	"bookId" uuid NOT NULL,
-	"created_at" timestamp with time zone DEFAULT now(),
-	CONSTRAINT "rating_id_unique" UNIQUE("id")
+	"id" text PRIMARY KEY NOT NULL,
+	"userId" text NOT NULL,
+	"bookId" text NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "session" (
+	"sessionToken" text PRIMARY KEY NOT NULL,
+	"userId" text NOT NULL,
+	"expires" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "user" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
 	"name" text,
 	"email" text,
 	"image" text,
+	"password" text,
 	"role" text DEFAULT 'user',
 	"emailVerified" timestamp,
-	"createdAt" timestamp DEFAULT now(),
-	CONSTRAINT "user_id_unique" UNIQUE("id")
+	"createdAt" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "books" ADD CONSTRAINT "books_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "publisher" ADD CONSTRAINT "publisher_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "rating" ADD CONSTRAINT "rating_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "rating" ADD CONSTRAINT "rating_bookId_books_id_fk" FOREIGN KEY ("bookId") REFERENCES "public"."books"("id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "rating" ADD CONSTRAINT "rating_bookId_books_id_fk" FOREIGN KEY ("bookId") REFERENCES "public"."books"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "session" ADD CONSTRAINT "session_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;

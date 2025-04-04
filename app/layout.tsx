@@ -20,7 +20,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className="dark text-white">
       <SessionProvider session={session}>
-        <body className="hide-scrollbar">
+        <body className="bg-black">
           {/* Toaster */}
           <Toaster theme="dark" position="bottom-right" />
           {children}

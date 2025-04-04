@@ -1,4 +1,4 @@
-import BookCover from "@/components/details/BookCover";
+import BookCover from "@/components/global/BookCover";
 
 import { MdStar } from "react-icons/md";
 
@@ -8,7 +8,7 @@ interface Props {
 const BookOverview = ({ book }: Props) => {
   return (
     <div className="book-overview">
-      <div className="flex flex-1 flex-col gap-2 xl:w-[45%]">
+      <div className="flex flex-1 flex-col gap-2 xl:w-[45%] mt-20 xl:mt-0">
         <h1>{book.title}</h1>
 
         <div className="book-info">
@@ -27,15 +27,17 @@ const BookOverview = ({ book }: Props) => {
           </div>
         </div>
 
-        <p className="book-description font-serif">{book.description}</p>
+        <p className="book-description">{book.description}</p>
       </div>
 
       <div className="relative flex justify-center xl:w-[55%]">
         <div className="relative">
-          <BookCover coverImage={book.coverUrl} />
+          {/* <BookCover coverImage={book.coverUrl} /> */}
+          <BookCover coverImage={"/cover.PNG"} />
 
           <div className="absolute top-15 opacity-20 left-14 rotate-[20deg] hidden md:block">
-            <BookCover coverImage={book.coverUrl} />
+            {/* <BookCover coverImage={book.coverUrl} /> */}
+            <BookCover coverImage={"/cover.PNG"} />
           </div>
         </div>
       </div>

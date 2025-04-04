@@ -1,0 +1,34 @@
+import BookCard from "@/components/home/BookCard";
+import Filters from "@/components/home/Filters";
+import { db } from "@/drizzle";
+
+const BookDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const id = (await params).id;
+
+  const publisher = await db.query.publisher.findFirst({
+    where: (user, { eq }) => eq(user.userId, id),
+  });
+
+  const books = await db.query.books.findMany({
+    where: (book, { eq }) => eq(book.userId, id),
+  });
+
+  return (
+    <div className="mt-10">
+      <h1 className="font-bold text-4xl text-primary mt-2">Our Library</h1>
+      <Filters books={books} />
+      <div className="book-list">
+        {books.length === 0 && (
+          <h3 className="flex justify-center items-center text-xl font-extrabold">
+            No Books Found
+          </h3>
+        )}
+        {books.map((book) => (
+          <BookCard book={book} key={book.id} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default BookDetails;

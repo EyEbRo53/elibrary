@@ -1,23 +1,29 @@
 import { auth } from "@/auth";
 import Header from "@/components/admin/Header";
 import Sidebar from "@/components/admin/Sidebar";
+import { db } from "@/drizzle";
+
 import { redirect } from "next/navigation";
 
 const DashboadLayout = async ({
   params,
   children,
 }: {
-  params: Promise<{ bookId: string }>;
+  params: Promise<{ userId: string }>;
   children: React.ReactNode;
 }) => {
-  const id = (await params).bookId;
-
   const session = await auth();
-  // if (!session?.user?.id) redirect("/sign-in");
 
+  const id = (await params).userId;
+
+  const publisher = await db.query.publisher.findFirst({
+    where: (user, { eq }) => eq(user.userId, id),
+  });
+
+  if (!publisher) redirect("/");
   return (
     <main className="dashboard-layout dark-gradient">
-      <Sidebar session={session!} />
+      <Sidebar publisher={publisher} />
 
       <div className="admin-container">
         <Header session={session!} />

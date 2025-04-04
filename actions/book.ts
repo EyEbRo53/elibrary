@@ -8,14 +8,16 @@ import { DeleteImages } from "@/actions/Uploadthing";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
 
 // create book
 export const createBook = async (book: z.infer<typeof bookSchema>) => {
   try {
+    const user = await auth();
     const newBook = await db
       .insert(books)
       .values({
-        // userId: "",
+        userId: user?.user?.id!,
         ...book,
       })
       .returning();

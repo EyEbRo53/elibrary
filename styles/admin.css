@@ -6,7 +6,7 @@
 
 @layer components {
   .dashboard-layout {
-    @apply flex min-h-screen flex-1 flex-row px-5 sm:px-10 md:px-16 w-full;
+    @apply flex min-h-screen flex-1 flex-row px-5 sm:px-5 md:px-10 xl:px-16 w-full;
   }
 
   .admin-container {
@@ -14,20 +14,20 @@
   }
 
   /* Sidebar */
-  .admin-sidebar {
+  .sidebar {
     @apply sticky left-0 top-0 flex h-dvh flex-col justify-between px-5 pb-5 pt-10 md:w-[240px];
   }
 
-  .admin-sidebar .link {
+  .sidebar .link {
     @apply flex flex-row items-center w-full gap-2 rounded-lg px-5 py-3.5 max-md:justify-center;
   }
 
-  .admin-sidebar .link p {
+  .sidebar .link p {
     @apply text-base font-medium max-md:hidden;
   }
 
-  .admin-sidebar .user {
-    @apply my-8 flex w-full flex-row gap-2 rounded-full border px-6 py-2 shadow-sm max-md:px-2;
+  .sidebar .user {
+    @apply my-8 flex w-fit md:w-full flex-row gap-2 rounded-full border border-zinc-600 px-6 py-2 shadow-sm max-md:px-2;
   }
 
   .admin-upload-div {

@@ -17,12 +17,14 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface Props {
   books: book[];
 }
 
 const BookTable = ({ books }: Props) => {
+  const session = useSession();
   if (books.length === 0) {
     return (
       <div className="flex justify-center items-center text-2xl font-bold text-primary mb-2">
@@ -74,7 +76,9 @@ const BookTable = ({ books }: Props) => {
               </TableCell>
               <TableCell className="space-x-2">
                 <Button size={"icon"} asChild>
-                  <Link href={`/dashboard/books/${book.id}`}>
+                  <Link
+                    href={`/dashboard/${session.data?.user?.id}/books/${book.id}`}
+                  >
                     <MdEdit className="size-6" />
                   </Link>
                 </Button>

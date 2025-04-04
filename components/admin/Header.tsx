@@ -10,7 +10,7 @@ const Header = ({ session }: { session: Session }) => {
           {session?.user?.name} Benson Raro
         </h2>
         <p className="text-base text-slate-400">
-          Monitor all of your e-books here
+          Monitor all of your E-Library here
         </p>
       </div>
 

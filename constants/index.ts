@@ -1,9 +1,11 @@
+import { useSession } from "next-auth/react";
 import { MdBook, MdHome } from "react-icons/md";
 
-export const adminSideBarLinks = [
+const session = useSession();
+export const dashboardSideBarLinks = [
   {
     icon: MdHome,
-    route: "/dashboard/userId",
+    route: `/dashboard/${session.data?.user?.id}`,
     text: "Home",
   },
   {
@@ -13,7 +15,7 @@ export const adminSideBarLinks = [
   },
   {
     icon: MdBook,
-    route: "/dashboard/userId/books/new",
+    route: `/dashboard/${session.data?.user?.id}/books/new`,
     text: "Add Books",
   },
 ];
