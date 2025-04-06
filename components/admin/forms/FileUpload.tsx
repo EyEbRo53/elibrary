@@ -58,7 +58,7 @@ const FileUpload = ({
     });
   };
 
-  // console.log(images);
+  // console.log(image);
 
   return (
     <div className="pb-4">
@@ -117,10 +117,11 @@ const FileUpload = ({
                 variant="link"
                 className="w-full rounded-xl h-40 border pb-2"
                 asChild
+                onClick={() => window?.open(url, "_blank")}
               >
-                <Link href={url} target="_blank">
-                  Open Book
-                </Link>
+                <div>Open Book</div>
+                {/* <Link href={url} target="_blank">
+                </Link> */}
               </Button>
             )}
           </div>
