@@ -90,7 +90,7 @@ const FileUpload = ({
       )}
       {/* Image View */}
       {url !== "" && (
-        <div className="flex items-start space-x-2 relative">
+        <div className="flex items-start space-x-2 relative w-fit">
           <div className="absolute items-center justify-center right-0 top-2">
             <Button
               type="button"

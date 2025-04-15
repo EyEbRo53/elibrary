@@ -48,7 +48,7 @@ const Header = ({
                     alt={session?.data?.user?.name || ""}
                     src={session?.data?.user?.image || ""}
                   />
-                  <AvatarFallback className="bg-gradient-to-br from-primary to-purple">
+                  <AvatarFallback className="bg-gradient-to-br from-primary to-blue">
                     {getInitials(session?.data?.user?.name || "IN")}
                   </AvatarFallback>
                 </Avatar>

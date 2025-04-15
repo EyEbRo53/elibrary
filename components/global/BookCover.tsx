@@ -13,7 +13,7 @@ const BookCover = ({ coverImage }: Props) => {
         <img
           src={coverImage}
           alt=""
-          className="rounded-lg w-[252px] h-[344px]"
+          className="rounded-lg w-[252px] h-[340px]"
         />
       </div>
     </div>

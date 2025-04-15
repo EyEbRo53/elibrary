@@ -31,7 +31,7 @@ const BookOverview = ({ book }: Props) => {
       </div>
 
       <div className="relative flex justify-center xl:w-[55%]">
-        <div className="relative">
+        <div className="relative pb-10">
           {/* <BookCover coverImage={book.coverUrl} /> */}
           <BookCover coverImage={"/cover.PNG"} />
 

@@ -10,7 +10,7 @@ body {
 }
 
 @theme {
-  --color-purple: #e521f2;
+  --color-blue: #2249ea;
   --color-dark-100: #16191e;
   --color-dark-200: #3a354e;
   --color-dark-300: #232839;
@@ -70,7 +70,7 @@ body {
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: #2249ea;
+  --primary: #e521f2;
   --primary-foreground: oklch(0.984 0.003 247.858);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
@@ -106,7 +106,7 @@ body {
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.129 0.042 264.695);
   --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: #2249ea;
+  --primary: #e521f2;
   --primary-foreground: oklch(0.208 0.042 265.755);
   --secondary: oklch(0.279 0.041 260.031);
   --secondary-foreground: oklch(0.984 0.003 247.858);
@@ -196,4 +196,23 @@ body {
 
 @utility border-gradient {
   @apply bg-gradient-to-b from-[#2f3035] to-[#0f0f16d2];
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  border-radius: 0px;
+}
+
+.hide-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 0px;
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: transparent;
 }

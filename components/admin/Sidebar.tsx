@@ -69,7 +69,7 @@ const Sidebar = ({ publisher }: { publisher: publisher | undefined }) => {
                     className={cn(
                       "link",
                       isSelected &&
-                        "bg-gradient-to-br from-primary to-purple shadow-sm"
+                        "bg-gradient-to-br from-primary to-blue shadow-sm"
                     )}
                   >
                     <link.icon className="size-6" />
@@ -95,7 +95,7 @@ const Sidebar = ({ publisher }: { publisher: publisher | undefined }) => {
               alt={session?.data?.user?.name || ""}
               src={session?.data?.user?.image || ""}
             />
-            <AvatarFallback className="bg-gradient-to-br from-primary to-purple">
+            <AvatarFallback className="bg-gradient-to-br from-primary to-blue">
               {getInitials(session?.data?.user?.name || "IN")}
             </AvatarFallback>
           </Avatar>

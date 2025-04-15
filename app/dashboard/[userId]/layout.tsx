@@ -24,7 +24,6 @@ const DashboadLayout = async ({
   return (
     <main className="dashboard-layout dark-gradient">
       <Sidebar publisher={publisher} />
-
       <div className="admin-container">
         <Header session={session!} />
         {children}
