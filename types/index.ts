@@ -9,6 +9,8 @@ interface book {
   pdfUrl: string;
   description: string;
   summary: string;
+  user?: user;
+  publisher?: publisher;
 }
 
 interface user {
@@ -28,6 +30,7 @@ interface publisher {
   image: string | null;
   createdAt: Date | null;
   userId: string;
+  description: string | null;
 }
 
 type FormType = "sign-in" | "sign-up";

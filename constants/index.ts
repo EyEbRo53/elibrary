@@ -1,22 +1,18 @@
 import { useSession } from "next-auth/react";
 import { MdBook, MdHome } from "react-icons/md";
 
-const session = useSession();
-export const dashboardSideBarLinks = [
+export const Sort = [
   {
-    icon: MdHome,
-    route: `/dashboard/${session.data?.user?.id}`,
-    text: "Home",
+    label: "Newest",
+    sort: "newest",
   },
   {
-    icon: MdBook,
-    route: "/dashboard/userId/books",
-    text: "All Books",
+    label: "Oldest",
+    sort: "oldest",
   },
   {
-    icon: MdBook,
-    route: `/dashboard/${session.data?.user?.id}/books/new`,
-    text: "Add Books",
+    label: "Highest Rated",
+    sort: "rating",
   },
 ];
 

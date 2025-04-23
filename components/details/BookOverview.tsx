@@ -1,4 +1,5 @@
 import BookCover from "@/components/global/BookCover";
+import Link from "next/link";
 
 import { MdStar } from "react-icons/md";
 
@@ -12,9 +13,12 @@ const BookOverview = ({ book }: Props) => {
         <h1>{book.title}</h1>
 
         <div className="book-info">
-          <p>
-            By <span className="font-semibold text-primary">{book.title}</span>
-          </p>
+          <Link href={`/publisher/${book.user?.id}`}>
+            By{" "}
+            <span className="font-semibold text-primary">
+              {book?.user?.name}
+            </span>
+          </Link>
 
           <p>
             Genre{" "}

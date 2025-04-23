@@ -1,15 +1,33 @@
+import { GetBooks } from "@/actions/GetBooks";
 import BookCard from "@/components/home/BookCard";
 import Filters from "@/components/home/Filters";
 import Hero from "@/components/home/Hero";
-import { db } from "@/drizzle";
+const RootHome = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    sort: string;
+    q: string;
+    page: number;
+    rating: string;
+  }>;
+}) => {
+  const params = await searchParams;
+  const books = await GetBooks(
+    params.page,
+    16,
+    params.sort,
+    params.q,
+    params.rating
+  );
 
-const RootHome = async () => {
-  const books = await db.query.books.findMany();
   return (
-    <div className="space-y-6 mb-4">
+    <div className="space-y-6 mb-10">
       <Hero />
-      <h1 className="font-bold text-4xl text-primary mt-2">Our Library</h1>
-      <Filters books={books} />
+      <div className="flex justify-between gap-4">
+        <h1 className="font-bold text-4xl text-primary mt-2">E-Library</h1>
+        <Filters />
+      </div>
       <div className="book-list">
         {books.length === 0 && (
           <h3 className="flex justify-center items-center text-xl font-extrabold">

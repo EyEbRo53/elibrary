@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 type Props = {
-  fileUrl: string;
+  fileUrl: string | undefined;
 };
 
 export default function PdfViewer({ fileUrl }: Props) {
@@ -26,7 +26,7 @@ export default function PdfViewer({ fileUrl }: Props) {
   };
 
   return (
-    <div className="pt-10 space-y-2 w-fit">
+    <div className="pt-10 pb-5 space-y-2 w-fit">
       <h2 className="text-2xl font-bold text-primary">PDF Viewer</h2>
 
       <div className="flex gap-4 justify-end">

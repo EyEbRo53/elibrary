@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   timestamp,
   pgTable,
@@ -53,6 +54,7 @@ export const publisher = pgTable("publisher", {
     .references(() => users.id)
     .notNull(),
   name: text("name"),
+  description: text("description"),
   image: text("image"),
   createdAt: timestamp("createdAt").defaultNow(),
 });
@@ -76,6 +78,17 @@ export const books = pgTable("books", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
+export const booksRelations = relations(books, ({ one }) => ({
+  user: one(users, {
+    fields: [books.userId],
+    references: [users.id],
+  }),
+  publisher: one(publisher, {
+    fields: [books.userId],
+    references: [publisher.userId],
+  }),
+}));
+
 export const rating = pgTable("rating", {
   id: text("id")
     .primaryKey()
@@ -88,3 +101,14 @@ export const rating = pgTable("rating", {
     .notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
+
+export const ratingRelations = relations(rating, ({ one }) => ({
+  user: one(users, {
+    fields: [rating.userId],
+    references: [users.id],
+  }),
+  book: one(books, {
+    fields: [rating.userId],
+    references: [books.id],
+  }),
+}));

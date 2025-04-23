@@ -149,11 +149,11 @@ body {
   }
 
   .hero-card {
-    @apply flex flex-col-reverse dark-gradient rounded-2xl xl:flex-row px-16 items-center justify-between;
+    @apply flex flex-col-reverse dark-gradient rounded-2xl xl:flex-row px-10 lg:px-16 items-center justify-between;
   }
 
   .book-list {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2;
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4;
   }
 
   .auth-layout {
@@ -183,6 +183,12 @@ body {
 
   .book-description {
     @apply mt-4 text-justify text-xl text-gray-100;
+  }
+  .bookcard-div {
+    @apply mx-5 absolute bg-dark-500 border border-zinc-700 bottom-4 right-[5px] z-[100] w-[240px] rounded-md;
+  }
+  .bookcard-last-div {
+    @apply flex justify-between gap-2 items-center px-2 mb-2 text-gray-400 text-sm font-bold;
   }
 }
 

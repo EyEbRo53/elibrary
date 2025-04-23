@@ -1,4 +1,6 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { createPublisher, updatePublisher } from "@/actions/publisher";
+import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -7,7 +9,6 @@ import { useRouter } from "next/navigation";
 import { MdEdit } from "react-icons/md";
 import { useState } from "react";
 import { toast } from "sonner";
-import { createPublisher, updatePublisher } from "@/actions/publisher";
 
 const PublisherDialog = ({
   open,
@@ -22,7 +23,9 @@ const PublisherDialog = ({
   const router = useRouter();
   const image = publisher ? publisher?.image : session.data?.user?.image;
   const name = publisher ? publisher?.name : session.data?.user?.name;
+  const dbDescription = publisher?.description;
   const [value, setValue] = useState(name);
+  const [description, setDescription] = useState(dbDescription);
   const [loading, setLoading] = useState(false);
 
   const fixedImage = "/favicon.ico";
@@ -31,14 +34,15 @@ const PublisherDialog = ({
     const values = {
       image: fixedImage,
       name: value,
+      description,
     };
     setLoading(true);
     if (publisher) {
       const updateProfile = await updatePublisher(values);
       if (updateProfile.success) {
         toast.success("Publisher Profile Updated successfully");
-        router.push(`/dashboard/${session.data?.user?.id}`);
         setOpen(false);
+        setLoading(false);
       } else {
         setLoading(false);
         toast.error(updateProfile.message);
@@ -58,7 +62,7 @@ const PublisherDialog = ({
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="dark-gradient border-zinc-700">
+      <DialogContent className="dark-gradient border-zinc-700 z-[100]">
         <DialogTitle>
           {publisher
             ? "Update Your Publisher Profile"
@@ -81,6 +85,12 @@ const PublisherDialog = ({
             disabled={loading}
             value={value!}
             onChange={(e) => setValue(e.target.value)}
+          />
+          <Textarea
+            required
+            disabled={loading}
+            value={description!}
+            onChange={(e) => setDescription(e.target.value)}
           />
           <Button type="submit" className="w-full" disabled={loading}>
             {publisher ? "Update" : "Create"}

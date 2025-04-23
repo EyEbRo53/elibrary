@@ -5,7 +5,7 @@ const Hero = () => {
     <section className="hero-card-border mt-6">
       <div className="hero-card">
         <div className="flex flex-col gap-6 max-w-xl">
-          <h2 className="font-bold text-4xl">
+          <h2 className="font-bold text-2xl lg:text-4xl">
             Get Interview-Ready with AI-Powered Practice & Feedback
           </h2>
           <p className="text-lg">

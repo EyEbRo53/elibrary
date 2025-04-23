@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { MdBook, MdHome } from "react-icons/md";
 import { useState } from "react";
@@ -12,8 +12,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import PublisherDialog from "@/components/navigation/PublisherDialog";
 
 const Sidebar = ({ publisher }: { publisher: publisher | undefined }) => {
-  const pathname = usePathname();
   const session = useSession();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   const isDashboard = pathname.includes("dashboard");

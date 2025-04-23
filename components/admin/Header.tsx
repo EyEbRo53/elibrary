@@ -1,6 +1,6 @@
 import { Session } from "next-auth";
 
-import Search from "./Search";
+import Search from "@/components/admin/Search";
 
 const Header = ({ session }: { session: Session }) => {
   return (
