@@ -1,7 +1,9 @@
 import { GetBooks } from "@/actions/GetBooks";
 import BookCard from "@/components/home/BookCard";
-import Filters from "@/components/home/Filters";
+import Filters from "@/components/global/Filters";
 import Hero from "@/components/home/Hero";
+import Pagination from "@/components/global/Pagination";
+import { db } from "@/drizzle";
 const RootHome = async ({
   searchParams,
 }: {
@@ -12,10 +14,13 @@ const RootHome = async ({
     rating: string;
   }>;
 }) => {
+  const allBooks = await db.query.books.findMany();
+  const totalBooks = allBooks.length;
+  const pageSize = 16;
   const params = await searchParams;
   const books = await GetBooks(
     params.page,
-    16,
+    pageSize,
     params.sort,
     params.q,
     params.rating
@@ -38,6 +43,7 @@ const RootHome = async ({
           <BookCard book={book} key={book.id} />
         ))}
       </div>
+      <Pagination noOfBooks={totalBooks} pageSize={pageSize} />
     </div>
   );
 };

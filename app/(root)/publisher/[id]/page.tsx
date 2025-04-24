@@ -1,10 +1,11 @@
 import { GetBooks } from "@/actions/GetBooks";
 import BookCard from "@/components/home/BookCard";
-import Filters from "@/components/home/Filters";
+import Filters from "@/components/global/Filters";
 import PublisherDetails from "@/components/publisher/PublisherDetails";
 import { db } from "@/drizzle";
 
 import { redirect } from "next/navigation";
+import Pagination from "@/components/global/Pagination";
 
 const BookDetails = async ({
   params,
@@ -20,26 +21,31 @@ const BookDetails = async ({
 }) => {
   const id = (await params).id;
   const searchparams = await searchParams;
+  const pageSize = 16;
+
+  const publisherBooks = await db.query.books.findMany({
+    where: (book, { eq }) => eq(book.userId, id),
+  });
+  const totalBooks = publisherBooks.length;
   const books = await GetBooks(
     searchparams.page,
-    16,
+    pageSize,
     searchparams.sort,
     searchparams.q,
-    searchparams.rating
+    searchparams.rating,
+    id
   );
 
   const publisher = await db.query.publisher.findFirst({
     where: (user, { eq }) => eq(user.userId, id || ""),
   });
 
-  const publishedBooks = books.filter((book) => book.userId === id);
-
   if (!publisher) {
     redirect("/");
   }
 
   return (
-    <div className="mt-5 w-full space-y-8">
+    <div className="my-5 w-full space-y-8">
       <PublisherDetails publisher={publisher} noOfBooks={books.length} />
       <div className="block space-y-4">
         <div className="flex justify-between items-center">
@@ -54,11 +60,13 @@ const BookDetails = async ({
               No Published Books!
             </h3>
           )}
-          {publishedBooks.map((book) => (
+          {books.map((book) => (
             <BookCard book={book} key={book.id} />
           ))}
         </div>
       </div>
+
+      <Pagination noOfBooks={totalBooks} pageSize={pageSize} />
     </div>
   );
 };
