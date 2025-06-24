@@ -9,7 +9,7 @@ const BookCard = ({ book }: { book: book }) => {
   return (
     <div className="space-y-2 w-full justify-center items-center flex">
       <Link href={`/book/${book.id}`} className="flex justify-center relative">
-        <BookCover coverImage={"/cover.PNG"} />
+        <BookCover coverImage={book.coverUrl} />
         <div className="bookcard-div">
           <div className="flex justify-between gap-1 p-2">
             <div className="space-y-1">

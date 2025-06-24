@@ -22,9 +22,10 @@ export async function GET(req: NextRequest) {
       status: 200,
       headers: {
         "Content-Type": contentType,
-        "Content-Disposition": 'inline; filename="file.pdf"',
+        "Content-Disposition": 'attachment; filename="file.pdf"',
         ...(contentLength ? { "Content-Length": contentLength } : {}),
         "Cache-Control": "no-store",
+        "Access-Control-Allow-Origin": "*",
       },
     });
   } catch (err) {

@@ -13,11 +13,11 @@ const BookDetails = async ({
     where: (book, { eq }) => eq(book.id, id),
     with: { user: true },
   });
-  // console.log(books);
+
   return (
     <div className="mt-10">
       <BookOverview book={book!} />
-      <PDFViewer fileUrl={book?.pdfUrl} />
+      <PDFViewer fileUrl={book?.pdfUrl || ""} />
     </div>
   );
 };

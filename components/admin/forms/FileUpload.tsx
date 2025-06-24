@@ -39,7 +39,7 @@ const FileUpload = ({
     const files = e.target.files;
 
     if (!files) {
-      toast.error("Please select your image(s)");
+      toast.error("Please select your image");
       return;
     }
 
@@ -80,7 +80,7 @@ const FileUpload = ({
                 type="file"
                 ref={filePickerRef}
                 hidden
-                accept="image/*"
+                accept={type === "image" ? "image/*" : "application/pdf"}
                 onChange={addItem}
               />
               Upload
@@ -106,7 +106,7 @@ const FileUpload = ({
             {type === "image" && (
               <Image
                 src={url}
-                className="w-full h-[20%] rounded-xl max-h-40 object-contain pb-2"
+                className="w-full h-[20%] rounded-md max-h-40 object-contain pb-2"
                 alt={`Image ${url}`}
                 height={500}
                 width={500}
@@ -119,9 +119,9 @@ const FileUpload = ({
                 asChild
                 onClick={() => window?.open(url, "_blank")}
               >
-                <div>Open Book</div>
-                {/* <Link href={url} target="_blank">
-                </Link> */}
+                <Link href={url} target="_blank">
+                  Open Book
+                </Link>
               </Button>
             )}
           </div>

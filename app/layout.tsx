@@ -19,6 +19,9 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <html lang="en" className="dark text-white">
+      <head>
+        <script src="https://acrobatservices.adobe.com/view-sdk/viewer.js"></script>
+      </head>
       <SessionProvider session={session}>
         <body className="bg-black hide-scrollbar">
           {/* Toaster */}

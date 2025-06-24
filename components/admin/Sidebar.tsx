@@ -43,7 +43,7 @@ const Sidebar = ({ publisher }: { publisher: publisher | undefined }) => {
   ];
 
   return (
-    <>
+    <div className="md:w-[240px]">
       <div className="sidebar bg-dark-100 shadow-2xl">
         <div>
           <Link href={"/"} className="flex items-center">
@@ -102,16 +102,14 @@ const Sidebar = ({ publisher }: { publisher: publisher | undefined }) => {
 
           <div className="flex flex-col max-md:hidden">
             <p className="font-semibold">{session?.data?.user?.name}</p>
-            <p className="text-xs text-gray-300">
-              {session?.data?.user?.email}
-            </p>
+            <p className="text-xs text-gray-300">Publisher</p>
           </div>
         </div>
       </div>
       {isDashboard && open && (
         <PublisherDialog open={open} setOpen={setOpen} publisher={publisher} />
       )}
-    </>
+    </div>
   );
 };
 

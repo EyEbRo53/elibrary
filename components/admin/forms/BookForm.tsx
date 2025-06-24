@@ -48,8 +48,8 @@ const BookForm = ({ book }: Props) => {
         title: "",
         description: "",
         genre: "",
-        coverUrl: "/cover.PNG",
-        pdfUrl: "/next.pdf",
+        coverUrl: "",
+        pdfUrl: "",
         summary: "",
         status: "pro" as "free" | "pro",
       };
