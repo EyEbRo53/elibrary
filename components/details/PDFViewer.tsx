@@ -14,7 +14,13 @@ import { cn } from "@/lib/utils";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-const PDFViewer = ({ pdfUrl }: { pdfUrl: string }) => {
+const PDFViewer = ({
+  pdfUrl,
+  status,
+}: {
+  pdfUrl: string;
+  status: "free" | "pro" | null | undefined;
+}) => {
   const url =
     process.env.NODE_ENV === "development" ? pdfUrl : `/api/pdf?url=${pdfUrl}`;
   const [numPages, setNumPages] = useState<number>(0);
@@ -22,7 +28,7 @@ const PDFViewer = ({ pdfUrl }: { pdfUrl: string }) => {
   const [open, setOpen] = useState(false);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
-    setNumPages(numPages);
+    setNumPages(status === "free" ? numPages : 10);
     setPageNumber(1);
   }
 
@@ -66,7 +72,7 @@ const PDFViewer = ({ pdfUrl }: { pdfUrl: string }) => {
           file={url}
           onLoadSuccess={onDocumentLoadSuccess}
           loading={<Loading />}
-          onItemClick={onItemClick}
+          onItemClick={status === "pro" ? () => {} : onItemClick}
           className={"border p-2 border-dark-400 rounded-md"}
         >
           {numPages > 0 && (
@@ -84,14 +90,15 @@ const PDFViewer = ({ pdfUrl }: { pdfUrl: string }) => {
           )}
           <Button
             className={cn(
-              "absolute top-14 z-10 group-hover:block hidden",
-              open ? "right-[40%]" : "left-4"
+              "absolute top-14 z-10 group-hover:opacity-100 opacity-0",
+              open ? "right-[40%]" : "left-4",
+              status === "pro" ? "hidden" : "block"
             )}
             onClick={() => setOpen(!open)}
           >
             Open Table of Content
           </Button>
-          <div className="flex gap-2 min-h-fit rounded-md">
+          <div className={cn("flex gap-2 min-h-fit rounded-md")}>
             {open && (
               <div className="ml-2">
                 <h2 className="text-xl text-primary">Table of Content</h2>
@@ -121,7 +128,9 @@ const PDFViewer = ({ pdfUrl }: { pdfUrl: string }) => {
             </Button>
             <Button
               type="button"
-              disabled={pageNumber >= numPages}
+              disabled={
+                pageNumber >= numPages || (status === "pro" && numPages > 10)
+              }
               onClick={nextPage}
             >
               Next
