@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
+import { Document, Page, pdfjs, Outline } from "react-pdf";
 
 import "react-pdf/dist/Page/TextLayer.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import Loading from "@/components/global/Loading";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -18,6 +19,7 @@ const PDFViewer = ({ pdfUrl }: { pdfUrl: string }) => {
     process.env.NODE_ENV === "development" ? pdfUrl : `/api/pdf?url=${pdfUrl}`;
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
+  const [open, setOpen] = useState(false);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
     setNumPages(numPages);
@@ -51,30 +53,62 @@ const PDFViewer = ({ pdfUrl }: { pdfUrl: string }) => {
     setSearchText(event.target.value);
   }
 
+  function onItemClick({ pageNumber: itemPageNumber }: { pageNumber: number }) {
+    setPageNumber(itemPageNumber);
+  }
+
   return (
     <div className="w-fit mt-10 mb-4">
       <h2 className="text-2xl text-primary mb-4">PDF Viewer</h2>
-      {numPages > 0 && (
-        <div className="flex items-center gap-2 mb-1">
-          <Label htmlFor="search" className="text-lg font-bold">
-            Search:
-          </Label>
-          <Input
-            type="search"
-            id="search"
-            value={searchText}
-            onChange={onChange}
-          />
-        </div>
-      )}
 
       <div className="relative group">
         <Document
           file={url}
           onLoadSuccess={onDocumentLoadSuccess}
           loading={<Loading />}
+          onItemClick={onItemClick}
+          className={"border p-2 border-dark-400 rounded-md"}
         >
-          <Page pageNumber={pageNumber} customTextRenderer={textRenderer} />
+          {numPages > 0 && (
+            <div className="flex items-center gap-2 mb-1">
+              <Label htmlFor="search" className="text-lg font-bold">
+                Search:
+              </Label>
+              <Input
+                type="search"
+                id="search"
+                value={searchText}
+                onChange={onChange}
+              />
+            </div>
+          )}
+          <Button
+            className={cn(
+              "absolute top-14 z-10 group-hover:block hidden",
+              open ? "right-[40%]" : "left-4"
+            )}
+            onClick={() => setOpen(!open)}
+          >
+            Open Table of Content
+          </Button>
+          <div className="flex gap-2 min-h-fit rounded-md">
+            {open && (
+              <div className="ml-2">
+                <h2 className="text-xl text-primary">Table of Content</h2>
+                <Outline onItemClick={onItemClick} />
+              </div>
+            )}
+            <Page pageNumber={pageNumber} customTextRenderer={textRenderer} />
+          </div>
+          {numPages > 0 && (
+            <p className="flex justify-center mt-4">
+              Page
+              <span className="text-primary font-semibold mx-1">
+                {pageNumber}
+              </span>
+              of {numPages}
+            </p>
+          )}
         </Document>
         {numPages > 0 && (
           <div className="absolute bottom-4 right-[40%] gap-4 z-10 hidden group-hover:flex">
@@ -95,13 +129,6 @@ const PDFViewer = ({ pdfUrl }: { pdfUrl: string }) => {
           </div>
         )}
       </div>
-      {numPages > 0 && (
-        <p className="flex justify-center mt-4">
-          Page
-          <span className="text-primary font-semibold mx-1">{pageNumber}</span>
-          of {numPages}
-        </p>
-      )}
     </div>
   );
 };
