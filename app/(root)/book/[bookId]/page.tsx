@@ -17,7 +17,7 @@ const BookDetails = async ({
   return (
     <div className="mt-10">
       <BookOverview book={book!} />
-      <PDFViewer fileUrl={book?.pdfUrl || ""} />
+      <PDFViewer pdfUrl={book?.pdfUrl!} />
     </div>
   );
 };
