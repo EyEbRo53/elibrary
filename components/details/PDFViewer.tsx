@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const PDFViewer = ({ pdfUrl }: { pdfUrl: string }) => {
+  const url =
+    process.env.NODE_ENV === "development" ? pdfUrl : `/api/pdf?url=${pdfUrl}`;
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
@@ -51,47 +53,55 @@ const PDFViewer = ({ pdfUrl }: { pdfUrl: string }) => {
 
   return (
     <div className="w-fit mt-10 mb-4">
-      <div className="flex items-center gap-2 mb-1">
-        <Label htmlFor="search" className="text-lg font-bold">
-          Search:
-        </Label>
-        <Input
-          type="search"
-          id="search"
-          value={searchText}
-          onChange={onChange}
-        />
-      </div>
+      <h2 className="text-2xl text-primary mb-4">PDF Viewer</h2>
+      {numPages > 0 && (
+        <div className="flex items-center gap-2 mb-1">
+          <Label htmlFor="search" className="text-lg font-bold">
+            Search:
+          </Label>
+          <Input
+            type="search"
+            id="search"
+            value={searchText}
+            onChange={onChange}
+          />
+        </div>
+      )}
+
       <div className="relative group">
         <Document
-          file={pdfUrl}
+          file={url}
           onLoadSuccess={onDocumentLoadSuccess}
           loading={<Loading />}
         >
           <Page pageNumber={pageNumber} customTextRenderer={textRenderer} />
         </Document>
-        <div className="absolute bottom-4 right-[40%] gap-4 z-10 hidden group-hover:flex">
-          <Button
-            type="button"
-            disabled={pageNumber <= 1}
-            onClick={previousPage}
-          >
-            Previous
-          </Button>
-          <Button
-            type="button"
-            disabled={pageNumber >= numPages}
-            onClick={nextPage}
-          >
-            Next
-          </Button>
-        </div>
+        {numPages > 0 && (
+          <div className="absolute bottom-4 right-[40%] gap-4 z-10 hidden group-hover:flex">
+            <Button
+              type="button"
+              disabled={pageNumber <= 1}
+              onClick={previousPage}
+            >
+              Previous
+            </Button>
+            <Button
+              type="button"
+              disabled={pageNumber >= numPages}
+              onClick={nextPage}
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </div>
-      <p className="flex justify-center mt-4">
-        Page
-        <span className="text-primary font-semibold mx-1">{pageNumber}</span>
-        of {numPages}
-      </p>
+      {numPages > 0 && (
+        <p className="flex justify-center mt-4">
+          Page
+          <span className="text-primary font-semibold mx-1">{pageNumber}</span>
+          of {numPages}
+        </p>
+      )}
     </div>
   );
 };
