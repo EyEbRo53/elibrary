@@ -1,3 +1,4 @@
+import JobsList from "@/components/generatePdf/JobsList";
 import PromptForm from "@/components/generatePdf/PromptForm";
 
 import { FaFilePdf } from "react-icons/fa";
@@ -25,7 +26,7 @@ const GeneratepdfPage = () => {
             <h2 className="text-2xl font-bold text-gray-100">
               Generation History
             </h2>
-            {/* <JobList jobs={jobs} /> */}
+            <JobsList />
           </div>
         </main>
       </div>

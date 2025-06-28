@@ -1,4 +1,3 @@
-CREATE TYPE "public"."status" AS ENUM('free', 'pro');--> statement-breakpoint
 CREATE TABLE "account" (
 	"userId" text NOT NULL,
 	"type" text NOT NULL,
@@ -22,7 +21,16 @@ CREATE TABLE "books" (
 	"pdf_url" text NOT NULL,
 	"description" text NOT NULL,
 	"summary" varchar NOT NULL,
-	"status" "status" DEFAULT 'pro',
+	"status" text DEFAULT 'pro',
+	"created_at" timestamp with time zone DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "chats" (
+	"id" text PRIMARY KEY NOT NULL,
+	"userId" text NOT NULL,
+	"topic" text NOT NULL,
+	"status" text DEFAULT 'processing',
+	"pdf_url" text,
 	"created_at" timestamp with time zone DEFAULT now()
 );
 --> statement-breakpoint
@@ -30,6 +38,7 @@ CREATE TABLE "publisher" (
 	"id" text PRIMARY KEY NOT NULL,
 	"userId" text NOT NULL,
 	"name" text,
+	"description" text,
 	"image" text,
 	"createdAt" timestamp DEFAULT now()
 );
@@ -60,6 +69,7 @@ CREATE TABLE "user" (
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "books" ADD CONSTRAINT "books_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "chats" ADD CONSTRAINT "chats_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "publisher" ADD CONSTRAINT "publisher_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "rating" ADD CONSTRAINT "rating_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "rating" ADD CONSTRAINT "rating_bookId_books_id_fk" FOREIGN KEY ("bookId") REFERENCES "public"."books"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

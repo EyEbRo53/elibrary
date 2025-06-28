@@ -1,22 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Loading from "@/components/global/Loading";
 import { Button } from "@/components/ui/button";
 import { inngest } from "@/inngest/client";
+import { createJob } from "@/actions/jobs";
 
 const PromptForm = ({}) => {
   const [prompt, setPrompt] = useState<string>("");
-  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [isGenerating, setIsGenerating] = useTransition();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!prompt.trim() || isGenerating) return;
-    const job = await inngest.send({
-      name: "generate/pdf-generator",
-      data: { topic: prompt },
+    setIsGenerating(async () => {
+      const create = await createJob(prompt);
+
+      await inngest.send({
+        name: "generate/pdf-generator",
+        data: { topic: prompt, id: create },
+      });
+      setPrompt("");
     });
-    setPrompt("");
   };
 
   return (
@@ -45,14 +49,7 @@ const PromptForm = ({}) => {
           disabled={isGenerating || !prompt.trim()}
           className="mt-4 w-full"
         >
-          {isGenerating ? (
-            <>
-              <Loading />
-              Generating...
-            </>
-          ) : (
-            "Generate PDF"
-          )}
+          Generate PDF
         </Button>
       </form>
     </div>

@@ -1,8 +1,10 @@
-import { inngest } from "./client";
 import { createAgent, gemini } from "@inngest/agent-kit";
 import { marked } from "marked";
+
+import { inngest } from "./client";
 import { createPdfHTML } from "./pdfServices";
 import { uploadGeneratePDF } from "@/actions/Uploadthing";
+import { updateJob } from "@/actions/jobs";
 
 export const PDFGenerator = inngest.createFunction(
   { id: "pdf-generator" },
@@ -68,6 +70,16 @@ export const PDFGenerator = inngest.createFunction(
       return uploadedPDFURL;
     });
 
-    return { customCss: customCss, html: html, pdf: createdPDF };
+    const updateUserChat = await step.run("updateChat", async () => {
+      const update = await updateJob(event.data.id, createdPDF);
+      return update;
+    });
+
+    return {
+      customCss: customCss,
+      html: html,
+      pdf: createdPDF,
+      chatId: updateUserChat,
+    };
   }
 );

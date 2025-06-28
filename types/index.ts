@@ -34,3 +34,12 @@ interface publisher {
 }
 
 type FormType = "sign-in" | "sign-up";
+
+interface Job {
+  id: string;
+  createdAt: Date | null;
+  userId: string;
+  pdfUrl: string | null;
+  status: "processing" | "completed" | "failed" | null;
+  topic: string;
+}

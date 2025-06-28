@@ -1,6 +1,6 @@
 {
-  "id": "cf3dadc2-acd3-4506-a7cd-84d34fae8085",
-  "prevId": "7aa710ab-d132-4109-b652-c8b70a800938",
+  "id": "ac09d7a9-0eb6-45d2-8ebc-ca37246be779",
+  "prevId": "8f8259bf-b92d-4785-af82-e12f4cd753c4",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -151,8 +151,7 @@
         },
         "status": {
           "name": "status",
-          "type": "status",
-          "typeSchema": "public",
+          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "default": "'pro'"
@@ -170,6 +169,71 @@
         "books_userId_user_id_fk": {
           "name": "books_userId_user_id_fk",
           "tableFrom": "books",
+          "tableTo": "user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.jobs": {
+      "name": "jobs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "topic": {
+          "name": "topic",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'processing'"
+        },
+        "pdf_url": {
+          "name": "pdf_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "jobs_userId_user_id_fk": {
+          "name": "jobs_userId_user_id_fk",
+          "tableFrom": "jobs",
           "tableTo": "user",
           "columnsFrom": [
             "userId"
@@ -425,16 +489,7 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {
-    "public.status": {
-      "name": "status",
-      "schema": "public",
-      "values": [
-        "free",
-        "pro"
-      ]
-    }
-  },
+  "enums": {},
   "schemas": {},
   "sequences": {},
   "roles": {},

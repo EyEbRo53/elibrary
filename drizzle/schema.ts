@@ -59,8 +59,6 @@ export const publisher = pgTable("publisher", {
   createdAt: timestamp("createdAt").defaultNow(),
 });
 
-export const STATUS_ENUM = pgEnum("status", ["free", "pro"]);
-
 export const books = pgTable("books", {
   id: text("id")
     .primaryKey()
@@ -74,7 +72,7 @@ export const books = pgTable("books", {
   pdfUrl: text("pdf_url").notNull(),
   description: text("description").notNull(),
   summary: varchar("summary").notNull(),
-  status: STATUS_ENUM("status").default("pro"),
+  status: text("status").$type<"free" | "pro">().default("pro"), // ✅ fixed here
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
@@ -112,3 +110,18 @@ export const ratingRelations = relations(rating, ({ one }) => ({
     references: [books.id],
   }),
 }));
+
+export const jobs = pgTable("jobs", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
+    .references(() => users.id)
+    .notNull(),
+  topic: text("topic").notNull(),
+  status: text("status")
+    .$type<"processing" | "completed">()
+    .default("processing"), // ✅ fixed here
+  pdfUrl: text("pdf_url"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
