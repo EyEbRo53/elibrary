@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
+import PublisherDialog from "./PublisherDialog";
 
+import { TbLayoutDashboardFilled } from "react-icons/tb";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import PublisherDialog from "./PublisherDialog";
 
 const DashboardButton = ({
   publisher,
@@ -29,7 +30,8 @@ const DashboardButton = ({
         <PublisherDialog open={open} setOpen={setOpen} publisher={publisher} />
       )}
       <Button size={"lg"} onClick={onClick}>
-        Dashboard
+        <TbLayoutDashboardFilled className="size-6" />
+        <span className="ml-2 hidden md:block">Dashboard</span>
       </Button>
     </>
   );

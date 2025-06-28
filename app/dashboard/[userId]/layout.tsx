@@ -13,6 +13,7 @@ const DashboadLayout = async ({
   children: React.ReactNode;
 }) => {
   const session = await auth();
+  if (!session) redirect("/");
 
   const id = (await params).userId;
 

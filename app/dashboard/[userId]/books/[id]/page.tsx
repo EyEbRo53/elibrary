@@ -9,11 +9,9 @@ const NewBooks = async ({ params }: { params: Promise<{ id: string }> }) => {
     where: (book, { eq }) => eq(book.id, newId!),
   });
   return (
-    <>
-      <section className="w-full">
-        <BookForm book={book} />
-      </section>
-    </>
+    <section className="w-full">
+      <BookForm book={book} />
+    </section>
   );
 };
 
