@@ -7,13 +7,6 @@ import { auth } from "@/auth";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-export const fetchJobs = async () => {
-  const jobs = await db.query.jobs.findMany({
-    orderBy: (jobs, { desc }) => desc(jobs.createdAt),
-  });
-  return jobs;
-};
-
 export const createJob = async (topic: string) => {
   const session = await auth();
   if (!session || !topic) return;
