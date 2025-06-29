@@ -1,12 +1,13 @@
 "use client";
 
-import { Copy, DownloadIcon, FileTextIcon } from "lucide-react";
+import { Copy, DownloadIcon } from "lucide-react";
 import Link from "next/link";
 import Moment from "react-moment";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { FaFilePdf } from "react-icons/fa";
 
 const JobListItem = ({ job }: { job: Job }) => {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
@@ -36,7 +37,7 @@ const JobListItem = ({ job }: { job: Job }) => {
     <div className="bg-white/5 backdrop-blur-sm p-4 rounded-lg shadow-md border border-gray-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div className="flex items-start gap-4 flex-1 min-w-0">
         <div className="bg-indigo-500/20 p-2 rounded-full mt-1 flex-shrink-0">
-          <FileTextIcon className="h-6 w-6 text-indigo-300" />
+          <FaFilePdf className="h-6 w-6 text-indigo-300" />
         </div>
         <div className="flex-1 min-w-0">
           <p
@@ -69,7 +70,7 @@ const JobListItem = ({ job }: { job: Job }) => {
             </Button>
           </div>
         ) : (
-          <span className="text-sm text-muted-foreground animate-pulse">
+          <span className="text-muted-foreground animate-pulse">
             {shimmerMessages[currentMessageIndex]}
           </span>
         )}

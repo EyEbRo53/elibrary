@@ -1,24 +1,18 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Loading from "@/components/global/Loading";
+
 import { Button } from "@/components/ui/button";
-import { inngest } from "@/inngest/client";
 import { createJob } from "@/actions/jobs";
 
-const PromptForm = ({}) => {
+const PromptForm = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [isGenerating, setIsGenerating] = useTransition();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsGenerating(async () => {
-      const create = await createJob(prompt);
-
-      await inngest.send({
-        name: "generate/pdf-generator",
-        data: { topic: prompt, id: create },
-      });
+      await createJob(prompt);
       setPrompt("");
     });
   };
