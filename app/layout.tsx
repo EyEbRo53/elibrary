@@ -20,7 +20,8 @@ export default async function RootLayout({
   return (
     <html lang="en" className="dark text-white">
       <head>
-        <script src="https://acrobatservices.adobe.com/view-sdk/viewer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
       </head>
       <SessionProvider session={session}>
         <body className="bg-black hide-scrollbar">

@@ -15,6 +15,13 @@
       "when": 1751127274649,
       "tag": "0001_large_zzzax",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1751225561028,
+      "tag": "0002_grey_vanisher",
+      "breakpoints": true
     }
   ]
 }

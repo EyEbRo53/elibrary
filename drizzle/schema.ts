@@ -121,7 +121,9 @@ export const jobs = pgTable("jobs", {
   topic: text("topic").notNull(),
   status: text("status")
     .$type<"processing" | "completed">()
-    .default("processing"), // ✅ fixed here
+    .default("processing"),
   pdfUrl: text("pdf_url"),
+  html: text("pdf_html"),
+  customCss: text("pdf_customCss"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });

@@ -42,4 +42,6 @@ interface Job {
   pdfUrl: string | null;
   status: "processing" | "completed" | "failed" | null;
   topic: string;
+  html: string | null;
+  customCss: string | null;
 }

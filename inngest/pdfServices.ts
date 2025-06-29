@@ -1,44 +1,66 @@
-import puppeteer from "puppeteer";
+// Declare global types for jsPDF and html2canvas
+declare global {
+  interface Window {
+    jspdf: any;
+    html2canvas: any;
+  }
+}
 
 export const createPdfHTML = async (
   html: string,
   customCss: string
 ): Promise<string> => {
   try {
-    const browser = await puppeteer.launch({
-      headless: true, // Use true for production, false for debugging
-      args: ["--no-sandbox", "--disable-setuid-sandbox"], // for Vercel, Netlify, etc.
-    });
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
 
-    const page = await browser.newPage();
-
-    const fullHtml = `
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <style>${customCss}</style>
-        </head>
-        <body>
-          <div class="pdf-content">${html}</div>
-        </body>
-      </html>
+    // Wrap HTML in styled container
+    const container = document.createElement("div");
+    container.innerHTML = `
+      <style>${customCss}</style>
+      <div class="pdf-wrapper p-8 prose prose-sm sm:prose lg:prose-lg xl:prose-xl 2xl:prose-2xl mx-auto">
+        ${html}
+      </div>
     `;
+    container.style.position = "absolute";
+    container.style.left = "-9999px";
+    container.style.width = "210mm";
+    container.style.background = "white";
+    container.style.color = "black";
+    document.body.appendChild(container);
 
-    await page.setContent(fullHtml, { waitUntil: "networkidle0" });
-
-    const buffer = await page.pdf({
-      format: "A4",
-      printBackground: true,
+    // Render to canvas
+    const canvas = await window.html2canvas(container, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
     });
 
-    await browser.close();
+    document.body.removeChild(container);
 
-    const base64 = Buffer.from(buffer).toString("base64");
-    const blobUrl = `data:application/pdf;base64,${base64}`;
-    return blobUrl;
+    const imgData = canvas.toDataURL("image/png");
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfPageHeight = pdf.internal.pageSize.getHeight();
+
+    const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
+    heightLeft -= pdfPageHeight;
+
+    while (heightLeft > 0) {
+      position = -heightLeft;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
+      heightLeft -= pdfPageHeight;
+    }
+
+    const pdfBlob = pdf.output("blob");
+    return URL.createObjectURL(pdfBlob);
   } catch (error) {
-    console.error("Error generating PDF:", error);
+    console.error("Error creating PDF:", error);
     throw new Error("Failed to generate PDF from content.");
   }
 };
