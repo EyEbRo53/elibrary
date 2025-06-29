@@ -1,13 +1,16 @@
+import { NextResponse } from "next/server";
 import puppeteer from "puppeteer";
 
-export const createPdfHTML = async (
-  html: string,
-  customCss: string
-): Promise<string> => {
+// Must be dynamic import to avoid bundling Puppeteer with the edge function
+export const dynamic = "force-dynamic";
+
+export async function POST(req) {
   try {
+    const { html, customCss } = await req.json();
+
     const browser = await puppeteer.launch({
-      headless: true, // Use true for production, false for debugging
-      args: ["--no-sandbox", "--disable-setuid-sandbox"], // for Vercel, Netlify, etc.
+      headless: false,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     const page = await browser.newPage();
@@ -36,9 +39,13 @@ export const createPdfHTML = async (
 
     const base64 = Buffer.from(buffer).toString("base64");
     const blobUrl = `data:application/pdf;base64,${base64}`;
-    return blobUrl;
+
+    return NextResponse.json({ pdfUrl: blobUrl });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    throw new Error("Failed to generate PDF from content.");
+    return NextResponse.json(
+      { error: "Failed to generate PDF." },
+      { status: 500 }
+    );
   }
-};
+}

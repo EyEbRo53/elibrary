@@ -64,9 +64,33 @@ export const PDFGenerator = inngest.createFunction(
     const { output: CSSOutput } = await PDFDesignerAgent.run(markdownPrompt);
     const customCss = CSSOutput[0].type === "text" ? CSSOutput[0].content : "";
 
+    // const createdPDF = await step.run("Create PDF", async () => {
+    //   const PDFURL = await createPdfHTML(html, customCss as string);
+    //   const uploadedPDFURL = await uploadGeneratePDF(PDFURL, event.data.topic);
+    //   return uploadedPDFURL;
+    // });
+
     const createdPDF = await step.run("Create PDF", async () => {
-      const PDFURL = await createPdfHTML(html, customCss as string);
-      const uploadedPDFURL = await uploadGeneratePDF(PDFURL, event.data.topic);
+      const url =
+        process.env.NODE_ENV === "production"
+          ? "https://elibrarybr.vercel.app/api/generate-pdf"
+          : "http://localhost:3000/api/generate-pdf";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ html, customCss }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error("Failed to create PDF.");
+      }
+
+      const uploadedPDFURL = await uploadGeneratePDF(
+        data.pdfUrl,
+        event.data.topic
+      );
       return uploadedPDFURL;
     });
 
