@@ -4,11 +4,29 @@ import { Copy, DownloadIcon, FileTextIcon } from "lucide-react";
 import Link from "next/link";
 import Moment from "react-moment";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import Loading from "@/components/global/Loading";
 
 const JobListItem = ({ job }: { job: Job }) => {
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const shimmerMessages = [
+    "Thinking....",
+    "Generating PDF...",
+    "Processing your request...",
+    "Almost there, hang tight!",
+    "Your PDF is being created...",
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMessageIndex(
+        (prevIndex) => (prevIndex + 1) % shimmerMessages.length
+      );
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [shimmerMessages.length]);
+
   const OnCopy = () => {
     navigator.clipboard.writeText(job.pdfUrl || "");
     toast.success(`${job.topic} PDF URL was Copied to the Clipboard`);
@@ -32,7 +50,6 @@ const JobListItem = ({ job }: { job: Job }) => {
           </Moment>
         </div>
       </div>
-
       <div className="text-right">
         {job.status === "completed" && job.pdfUrl ? (
           <div className="flex gap-2">
@@ -52,9 +69,9 @@ const JobListItem = ({ job }: { job: Job }) => {
             </Button>
           </div>
         ) : (
-          <div className="p-2 border border-dark-400 rounded-md">
-            <Loading />
-          </div>
+          <span className="text-sm text-muted-foreground animate-pulse">
+            {shimmerMessages[currentMessageIndex]}
+          </span>
         )}
       </div>
     </div>
