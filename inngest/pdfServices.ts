@@ -6,8 +6,7 @@ export const createPdfHTML = async (
 ): Promise<string> => {
   try {
     const browser = await puppeteer.launch({
-      headless: true, // Use true for production, false for debugging
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH, // Use the
+      headless: false, // Use true for production, false for debugging
       args: ["--no-sandbox", "--disable-setuid-sandbox"], // for Vercel, Netlify, etc.
     });
 
