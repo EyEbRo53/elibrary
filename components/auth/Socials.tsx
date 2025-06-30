@@ -1,16 +1,18 @@
+import { rateLimit } from "@/actions/rateLimit";
 import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useTransition } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { IoLogoGithub } from "react-icons/io5";
 
 const Socials = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useTransition();
 
   const onProviderSignUp = async (provider: "github" | "google") => {
-    setLoading(true);
-    signIn(provider, { redirectTo: "/" });
-    setLoading(false);
+    setLoading(async () => {
+      await rateLimit();
+      await signIn(provider, { redirectTo: "/" });
+    });
   };
   return (
     <div className="flex justify-between gap-2">

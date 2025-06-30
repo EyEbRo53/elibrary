@@ -39,6 +39,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
+      await rateLimit();
       if (type === "sign-up") {
         const values = {
           fullName: data.name!,
@@ -52,7 +53,6 @@ const AuthForm = ({ type }: { type: FormType }) => {
         }
       } else {
         try {
-          await rateLimit();
           const login = await signIn("credentials", {
             email: data.email,
             password: data.password,
