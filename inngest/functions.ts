@@ -33,7 +33,7 @@ export const PDFGenerator = inngest.createFunction(
     const PDFDesignerAgent = createAgent({
       name: "PDF Designer",
       system:
-        "Your are an expert PDF designer. You will design a CSS stylesheet for the provided HTML content.",
+        "You are an expert PDF layout designer. Your task is to create a clean, professional, and print-ready HTML + CSS layout that will be converted into a PDF document. The design should: Use only inline or embedded CSS (no external stylesheets).Be A4 page size, with standard print margins (1 inch).Support print-friendly fonts (e.g., sans-serif or Georgia). Look visually professional — align sections, use spacing, bold headers, and distinct sections. Include headers, sections, and content blocks with good vertical rhythm and spacing. Avoid JavaScript; focus only on HTML + CSS.",
       model: gemini({
         model: "gemini-2.0-flash-lite",
       }),
