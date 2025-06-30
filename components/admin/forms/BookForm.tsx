@@ -38,6 +38,8 @@ const BookForm = ({ book }: Props) => {
   const router = useRouter();
   const session = useSession();
   const [loading, setLoading] = useState(false);
+  const [isUpload, setIsUpload] = useState(false);
+  const [PDFURL, setPDFURL] = useState("");
 
   const defaultValues = book
     ? {
@@ -57,6 +59,11 @@ const BookForm = ({ book }: Props) => {
     resolver: zodResolver(bookSchema),
     defaultValues: defaultValues,
   });
+
+  const onChangePDF = (url: string) => {
+    setPDFURL(url);
+    form.getFieldState("pdfUrl");
+  };
 
   const onSubmit = async (values: z.infer<typeof bookSchema>) => {
     // console.log(values);
@@ -109,24 +116,50 @@ const BookForm = ({ book }: Props) => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name={"pdfUrl"}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Book PDF</FormLabel>
-                  <FormControl>
-                    <FileUpload
-                      url={field.value}
-                      disabled={loading}
-                      onChange={field.onChange}
-                      type="pdf"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="block gap-4 lg:w-[50%]">
+              <FormField
+                control={form.control}
+                name={"pdfUrl"}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Upload PDF</FormLabel>
+                    <FormControl>
+                      <FileUpload
+                        url={field.value}
+                        disabled={loading}
+                        onChange={field.onChange}
+                        type="pdf"
+                        isUpload={isUpload}
+                        setIsUpload={setIsUpload}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* PDF URL input field */}
+              <span className="mb-2 flex justify-center items-center text-primary font-bold text-lg">
+                OR
+              </span>
+              <FormField
+                control={form.control}
+                name={"pdfUrl"}
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Add PDF URL</FormLabel>
+                    <FormControl>
+                      <Input
+                        required
+                        placeholder="PDF URL"
+                        {...field}
+                        disabled={loading || isUpload}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
 
           <div className="admin-inputs-div">

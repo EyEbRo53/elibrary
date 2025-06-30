@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
+import { useTransition } from "react";
 
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ const authFormSchema = (type: FormType) => {
 };
 
 const AuthForm = ({ type }: { type: FormType }) => {
+  const [pending, startTransition] = useTransition();
   const router = useRouter();
 
   const formSchema = authFormSchema(type);
@@ -37,42 +39,44 @@ const AuthForm = ({ type }: { type: FormType }) => {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    try {
-      await rateLimit();
-      if (type === "sign-up") {
-        const values = {
-          fullName: data.name!,
-          email: data.email,
-          password: data.password,
-        };
-        const signup = await signUp(values);
-        if (signup.success) {
-          toast.success("Account created successfully. Please sign in.");
-          router.push("/sign-in");
-        }
-      } else {
-        try {
-          const login = await signIn("credentials", {
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    startTransition(async () => {
+      try {
+        await rateLimit();
+        if (type === "sign-up") {
+          const values = {
+            fullName: data.name!,
             email: data.email,
             password: data.password,
-            callbackUrl: "/",
-          });
-          if (login?.ok) {
-            toast.success("Signed in successfully.");
+          };
+          const signup = await signUp(values);
+          if (signup.success) {
+            toast.success("Account created successfully. Please sign in.");
+            router.push("/sign-in");
           }
-          if (login?.error) {
+        } else {
+          try {
+            const login = await signIn("credentials", {
+              email: data.email,
+              password: data.password,
+              callbackUrl: "/",
+            });
+            if (login?.ok) {
+              toast.success("Signed in successfully.");
+            }
+            if (login?.error) {
+              toast.error("Something Went Wrong. Please try again");
+            }
+          } catch (error) {
             toast.error("Something Went Wrong. Please try again");
+            console.log(error);
           }
-        } catch (error) {
-          toast.error("Something Went Wrong. Please try again");
-          console.log(error);
         }
+      } catch (error) {
+        console.log(error);
+        toast.error(`There was an error: ${error}`);
       }
-    } catch (error) {
-      console.log(error);
-      toast.error(`There was an error: ${error}`);
-    }
+    });
   };
 
   const isSignIn = type === "sign-in";
@@ -116,7 +120,11 @@ const AuthForm = ({ type }: { type: FormType }) => {
               type="password"
             />
 
-            <Button className="w-full text-lg font-bold" type="submit">
+            <Button
+              className="w-full text-lg font-bold"
+              type="submit"
+              disabled={pending}
+            >
               {isSignIn ? "Sign In" : "Create an Account"}
             </Button>
           </form>

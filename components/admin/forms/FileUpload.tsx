@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useRef, useTransition } from "react";
+import { ChangeEventHandler, useRef, useState, useTransition } from "react";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import Image from "next/image";
 import { MdDelete } from "react-icons/md";
@@ -14,11 +14,15 @@ const FileUpload = ({
   disabled,
   onChange,
   type,
+  isUpload,
+  setIsUpload,
 }: {
   url: string;
   disabled: boolean;
   onChange: (image: string | string[]) => void;
   type: "image" | "pdf";
+  isUpload?: boolean;
+  setIsUpload?: (isUpload: boolean) => void;
 }) => {
   const filePickerRef = useRef<HTMLInputElement | null>(null);
   const [pending, startTransition] = useTransition();
@@ -31,6 +35,7 @@ const FileUpload = ({
     onClientUploadComplete: (res) => {
       const url = res?.[0].ufsUrl;
       onChange(url);
+      setIsUpload && setIsUpload(true);
       const message = `Uploaded Successfully!`;
       toast.success(message);
     },
@@ -53,6 +58,7 @@ const FileUpload = ({
       // console.log(deleted);
       if (deleted.success) {
         onChange("");
+        setIsUpload && setIsUpload(false);
         toast.success("Deleted Successfully!");
       }
     });
@@ -88,20 +94,22 @@ const FileUpload = ({
           )}
         </Button>
       )}
-      {/* Image View */}
+      {/* File View */}
       {url !== "" && (
         <div className="flex items-start space-x-2 relative w-fit">
-          <div className="absolute items-center justify-center right-0 top-2">
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              disabled={pending || disabled}
-              onClick={Delete}
-            >
-              <MdDelete className="h-4 w-4" />
-            </Button>
-          </div>
+          {isUpload && (
+            <div className="absolute items-center justify-center right-0 top-2">
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                disabled={pending || disabled}
+                onClick={Delete}
+              >
+                <MdDelete className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
           <div className="overflow-x-auto flex gap-1 scrollbar">
             {type === "image" && (
               <Image

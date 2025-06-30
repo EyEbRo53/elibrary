@@ -31,7 +31,7 @@
   }
 
   .admin-upload-div {
-    @apply block space-y-8 md:space-y-0 md:flex justify-between;
+    @apply block space-y-8 md:space-y-0 md:flex justify-between w-full;
   }
 
   .admin-inputs-div {
