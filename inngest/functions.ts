@@ -28,7 +28,11 @@ export const PDFGenerator = inngest.createFunction(
 
     const { output } = await PDFAgent.run(pdfPrompt);
     const markdownContent = output[0].type === "text" ? output[0].content : "";
-    const html = await marked.parse(markdownContent as string);
+
+    const html = await step.run("Markdown-to-HTML", async () => {
+      const html = await marked.parse(markdownContent as string);
+      return html;
+    });
 
     const PDFDesignerAgent = createAgent({
       name: "PDF Designer",
