@@ -11,54 +11,45 @@ export const createPdfHTML = async (
   customCss: string
 ): Promise<string> => {
   try {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p", "mm", "a4");
+    const TOKEN = "2SafpAFc0ApqLuC642afb8cf7b74a484c967e748052289050";
+    const url = `https://production-sfo.browserless.io/pdf?token=${TOKEN}`;
+    const headers = {
+      "Cache-Control": "no-cache",
+      "Content-Type": "application/json",
+    };
 
-    // Wrap HTML in styled container
-    const container = document.createElement("div");
-    container.innerHTML = `
-      <style>${customCss}</style>
-      <div class="pdf-wrapper p-8 prose prose-sm sm:prose lg:prose-lg xl:prose-xl 2xl:prose-2xl mx-auto">
-        ${html}
-      </div>
+    const fullHtml = `
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <style>${customCss}</style>
+        </head>
+        <body>
+          <div class="pdf-content" style={{padding: 20px}}>${html}</div>
+        </body>
+      </html>
     `;
-    container.style.position = "absolute";
-    container.style.left = "-9999px";
-    container.style.width = "210mm";
-    container.style.background = "white";
-    container.style.color = "black";
-    document.body.appendChild(container);
 
-    // Render to canvas
-    const canvas = await window.html2canvas(container, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
+    const data = {
+      html: fullHtml,
+      options: {
+        displayHeaderFooter: true,
+        printBackground: false,
+        format: "A4",
+      },
+    };
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(data),
     });
 
-    document.body.removeChild(container);
-
-    const imgData = canvas.toDataURL("image/png");
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfPageHeight = pdf.internal.pageSize.getHeight();
-
-    const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
-    heightLeft -= pdfPageHeight;
-
-    while (heightLeft > 0) {
-      position = -heightLeft;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
-      heightLeft -= pdfPageHeight;
-    }
-
-    const pdfBlob = pdf.output("blob");
-    return URL.createObjectURL(pdfBlob);
+    const pdfBuffer = await response.arrayBuffer();
+    const base64 = Buffer.from(pdfBuffer).toString("base64");
+    const blobUrl = `data:application/pdf;base64,${base64}`;
+    return blobUrl;
   } catch (error) {
     console.error("Error creating PDF:", error);
     throw new Error("Failed to generate PDF from content.");

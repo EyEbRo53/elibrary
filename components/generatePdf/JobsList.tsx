@@ -1,6 +1,5 @@
 "use client";
 
-import { db } from "@/drizzle";
 import JobListItem from "./JobListItem";
 import Loading from "@/components/global/Loading";
 

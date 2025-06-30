@@ -2,6 +2,8 @@ import { createAgent, gemini } from "@inngest/agent-kit";
 import { marked } from "marked";
 
 import { inngest } from "./client";
+import { createPdfHTML } from "./pdfServices";
+import { uploadGeneratePDF } from "@/actions/Uploadthing";
 import { updateJob } from "@/actions/jobs";
 
 export const PDFGenerator = inngest.createFunction(
@@ -62,14 +64,21 @@ export const PDFGenerator = inngest.createFunction(
     const { output: CSSOutput } = await PDFDesignerAgent.run(markdownPrompt);
     const customCss = CSSOutput[0].type === "text" ? CSSOutput[0].content : "";
 
+    const createdPDF = await step.run("Create PDF", async () => {
+      const PDFURL = await createPdfHTML(html, customCss as string);
+      const uploadedPDFURL = await uploadGeneratePDF(PDFURL, event.data.topic);
+      return uploadedPDFURL;
+    });
+
     const updateUserChat = await step.run("updateChat", async () => {
-      const update = await updateJob(event.data.id, html, customCss as string);
+      const update = await updateJob(event.data.id, createdPDF as string);
       return update;
     });
 
     return {
       customCss: customCss,
       html: html,
+      pdf: createdPDF,
       chatId: updateUserChat,
     };
   }

@@ -15,11 +15,7 @@ export const DeleteImages = async ({ files }: { files: string[] }) => {
   return JSON.parse(JSON.stringify(deleted));
 };
 
-export const uploadGeneratePDF = async (
-  blobUrl: string,
-  topic: string,
-  id: string
-) => {
+export const uploadGeneratePDF = async (blobUrl: string, topic: string) => {
   // Fetch the blob from the blobUrl
   const res = await fetch(blobUrl);
   const blob = await res.blob();
@@ -32,14 +28,6 @@ export const uploadGeneratePDF = async (
     });
     const uploadedPDF = await utapi.uploadFiles(file);
     const pdfUrl = uploadedPDF.data?.ufsUrl;
-    const update = await db
-      .update(jobs)
-      .set({
-        pdfUrl: pdfUrl,
-      })
-      .where(eq(jobs.id, id))
-      .returning({ id: jobs.id });
-    // Ensure the response is a plain object
     return pdfUrl;
   } catch (error) {
     console.error("Error uploading PDF:", error);

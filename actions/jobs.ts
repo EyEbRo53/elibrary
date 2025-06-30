@@ -27,17 +27,12 @@ export const createJob = async (topic: string) => {
   return create;
 };
 
-export const updateJob = async (
-  id: string,
-  html: string | null,
-  customCss: string
-) => {
-  if (!id || !html || !customCss) return;
+export const updateJob = async (id: string, url: string) => {
+  if (!id || !url) return;
   const update = await db
     .update(jobs)
     .set({
-      html: html,
-      customCss: customCss,
+      pdfUrl: url,
       status: "completed",
     })
     .where(eq(jobs.id, id))

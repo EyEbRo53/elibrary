@@ -1,14 +1,13 @@
 "use client";
 
 import { Copy, DownloadIcon } from "lucide-react";
+import Link from "next/link";
 import Moment from "react-moment";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { FaFilePdf } from "react-icons/fa";
-import { createPdfHTML } from "@/inngest/pdfServices";
-import { uploadGeneratePDF } from "@/actions/Uploadthing";
 
 const JobListItem = ({ job }: { job: Job }) => {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
@@ -29,42 +28,9 @@ const JobListItem = ({ job }: { job: Job }) => {
     return () => clearInterval(interval);
   }, [shimmerMessages.length]);
 
-  const copyFunction = (url: string) => {
-    navigator.clipboard.writeText(url || "");
+  const OnCopy = () => {
+    navigator.clipboard.writeText(job.pdfUrl || "");
     toast.success(`${job.topic} PDF URL was Copied to the Clipboard`);
-    return;
-  };
-
-  const downloadFunction = (url: string) => {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${job.topic.replace(/\s+/g, "-").toLowerCase()}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast.success(`${job.topic} PDF was Downloaded Successfully`);
-    return;
-  };
-
-  const onclick = async (copy: boolean) => {
-    if (job.pdfUrl && copy) {
-      copyFunction(job.pdfUrl);
-    }
-
-    if (job.pdfUrl && !copy) {
-      downloadFunction(job.pdfUrl || "");
-    }
-
-    if (!job.pdfUrl) {
-      const PDFURL = await createPdfHTML(job.html!, job.customCss!);
-      // const uploadedPDFURL = await uploadGeneratePDF(PDFURL, job.topic, job.id);
-      if (PDFURL && copy) {
-        copyFunction(PDFURL || "");
-      }
-      if (PDFURL && !copy) {
-        downloadFunction(PDFURL || "");
-      }
-    }
   };
 
   return (
@@ -86,18 +52,21 @@ const JobListItem = ({ job }: { job: Job }) => {
         </div>
       </div>
       <div className="text-right">
-        {job.status === "completed" ? (
+        {job.status === "completed" && job.pdfUrl ? (
           <div className="flex gap-2">
-            <Button onClick={() => onclick(true)} className="flex items-center">
+            <Button onClick={OnCopy} className="flex items-center">
               <Copy className="size-6" />
               <span className="hidden md:block">Copy URL</span>
             </Button>
-            <Button
-              className="flex items-center"
-              onClick={() => onclick(false)}
-            >
-              <DownloadIcon className="size-6" />
-              <span className="hidden md:block md:ml-2">Download</span>
+            <Button>
+              <Link
+                href={job.pdfUrl}
+                download={`generated-pdf-${job.topic}.pdf`}
+                className="flex items-center"
+              >
+                <DownloadIcon className="size-6" />
+                <span className="hidden md:block md:ml-2">Download</span>
+              </Link>
             </Button>
           </div>
         ) : (
