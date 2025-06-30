@@ -1,11 +1,3 @@
-// Declare global types for jsPDF and html2canvas
-declare global {
-  interface Window {
-    jspdf: any;
-    html2canvas: any;
-  }
-}
-
 export const createPdfHTML = async (
   html: string,
   customCss: string
@@ -26,7 +18,7 @@ export const createPdfHTML = async (
           <style>${customCss}</style>
         </head>
         <body>
-          <div class="pdf-content" style={{padding: 20px}}>${html}</div>
+          <div class="pdf-content">${html}</div>
         </body>
       </html>
     `;
