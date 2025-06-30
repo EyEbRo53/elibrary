@@ -50,10 +50,6 @@ const AuthForm = ({ type }: { type: FormType }) => {
           router.push("/sign-in");
         }
       } else {
-        const values = {
-          email: data.email,
-          password: data.password,
-        };
         try {
           signIn("credentials", {
             email: data.email,
