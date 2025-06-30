@@ -3,13 +3,10 @@ import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { JWT } from "next-auth/jwt";
-import { compare } from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 
 import { db } from "@/drizzle";
-import ratelimit from "@/lib/ratelimit";
+import { signIn } from "@/actions/auth";
 
 declare module "next-auth/jwt" {
   interface JWT {
@@ -26,22 +23,9 @@ export default {
           return null;
         }
 
-        const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1";
-        const { success } = await ratelimit.limit(ip);
-        if (!success) return redirect("/too-fast");
-
-        const user = await db.query.users.findFirst({
-          where: (user, { eq }) => eq(user.email, credentials.email.toString()),
-        });
+        const user = await signIn(credentials.email, credentials.password);
 
         if (!user) return null;
-
-        const isPasswordValid = await compare(
-          credentials.password.toString(),
-          user?.password!
-        );
-
-        if (!isPasswordValid) return null;
 
         return {
           id: user.id.toString(),

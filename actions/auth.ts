@@ -1,11 +1,12 @@
 "use server";
 
-import { hash } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
 import { db } from "@/drizzle";
 import { users } from "@/drizzle/schema";
-import { headers } from "next/headers";
 import ratelimit from "@/lib/ratelimit";
-import { redirect } from "next/navigation";
 
 export const signUp = async (values: {
   fullName: string;
@@ -40,4 +41,22 @@ export const signUp = async (values: {
     console.log(error, "Signup error");
     return { success: false, error: "Signup error" };
   }
+};
+
+export const signIn = async (email: string, password: string) => {
+  const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1";
+  const { success } = await ratelimit.limit(ip);
+  if (!success) return redirect("/too-fast");
+
+  const user = await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.email, email.toString()),
+  });
+
+  if (!user) return null;
+
+  const isPasswordValid = await compare(password.toString(), user?.password!);
+
+  if (!isPasswordValid) return null;
+
+  return user;
 };
