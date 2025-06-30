@@ -1,9 +1,15 @@
+import { auth } from "@/auth";
 import JobsList from "@/components/generatePdf/JobsList";
 import PromptForm from "@/components/generatePdf/PromptForm";
 
+import { redirect } from "next/navigation";
 import { FaFilePdf } from "react-icons/fa";
 
-const GeneratepdfPage = () => {
+const GeneratepdfPage = async () => {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/sign-in");
+  }
   return (
     <div className="min-h-screen font-sans">
       <div className="container mx-auto px-4 py-8 md:py-12">

@@ -16,7 +16,7 @@ const RootHome = async ({
 }) => {
   const allBooks = await db.query.books.findMany();
   const totalBooks = allBooks.length;
-  const pageSize = 16;
+  const pageSize = 10;
   const params = await searchParams;
   const books = await GetBooks(
     params.page,
@@ -35,15 +35,15 @@ const RootHome = async ({
       </div>
       <div className="book-list">
         {books.length === 0 && (
-          <h3 className="flex justify-center items-center text-xl font-extrabold">
-            No Books Found
-          </h3>
+          <h3 className="text-xl font-extrabold">No Books Found</h3>
         )}
         {books.map((book) => (
           <BookCard book={book} key={book.id} />
         ))}
       </div>
-      <Pagination noOfBooks={totalBooks} pageSize={pageSize} />
+      {allBooks.length > 10 && (
+        <Pagination noOfBooks={totalBooks} pageSize={pageSize} />
+      )}
     </div>
   );
 };

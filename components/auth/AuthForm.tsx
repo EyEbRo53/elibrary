@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import FormField from "@/components/global/FormField";
 import Socials from "./Socials";
 import { signUp } from "@/actions/auth";
+import { rateLimit } from "@/actions/rateLimit";
 
 const authFormSchema = (type: FormType) => {
   return z.object({
@@ -51,13 +52,18 @@ const AuthForm = ({ type }: { type: FormType }) => {
         }
       } else {
         try {
-          signIn("credentials", {
+          await rateLimit();
+          const login = await signIn("credentials", {
             email: data.email,
             password: data.password,
             callbackUrl: "/",
           });
-
-          toast.success("Signed in successfully.");
+          if (login?.ok) {
+            toast.success("Signed in successfully.");
+          }
+          if (login?.error) {
+            toast.error("Something Went Wrong. Please try again");
+          }
         } catch (error) {
           toast.error("Something Went Wrong. Please try again");
           console.log(error);

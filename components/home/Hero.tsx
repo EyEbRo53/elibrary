@@ -5,12 +5,10 @@ const Hero = () => {
     <section className="hero-card-border mt-6">
       <div className="hero-card">
         <div className="flex flex-col gap-6 max-w-xl">
-          <h2 className="font-bold text-2xl lg:text-4xl">
-            Get Interview-Ready with AI-Powered Practice & Feedback
+          <h2 className="font-bold text-xl lg:text-2xl">
+            Your Ultimate E-Library: Smarter Reading, Faster Learning
           </h2>
-          <p className="text-lg">
-            Practice real interview questions & get instant feedback
-          </p>
+          <p className="text-lg">Read the best books, articles, and papers.</p>
 
           <p></p>
         </div>

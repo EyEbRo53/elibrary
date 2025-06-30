@@ -65,8 +65,9 @@ const BookDetails = async ({
           ))}
         </div>
       </div>
-
-      <Pagination noOfBooks={totalBooks} pageSize={pageSize} />
+      {publisherBooks.length > 10 && (
+        <Pagination noOfBooks={totalBooks} pageSize={pageSize} />
+      )}
     </div>
   );
 };
