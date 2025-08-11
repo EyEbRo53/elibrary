@@ -59,7 +59,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
             const login = await signIn("credentials", {
               email: data.email,
               password: data.password,
-              callbackUrl: "/",
+              redirectTo: "/",
             });
             if (login?.ok) {
               toast.success("Signed in successfully.");

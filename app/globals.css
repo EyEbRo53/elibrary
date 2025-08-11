@@ -139,9 +139,21 @@ body {
   width: 100%;
 }
 
+@utility dark-gradient {
+  @apply bg-gradient-to-b from-[#1A1C20] to-[#08090D];
+}
+
+@utility blue-gradient-dark {
+  @apply bg-gradient-to-b from-[#0e0d1f] to-[#08090D];
+}
+
+@utility border-gradient {
+  @apply bg-gradient-to-b from-[#2f3035] to-[#0f0f16d2];
+}
+
 @layer components {
   .root-layout {
-    @apply flex blue-gradient-dark min-h-screen flex-1 flex-col px-5 sm:px-10 md:px-16;
+    @apply flex min-h-screen flex-1 flex-col px-5 sm:px-10 md:px-16;
   }
 
   .hero-card-border {
@@ -190,18 +202,9 @@ body {
   .bookcard-last-div {
     @apply flex justify-between gap-2 items-center px-2 mb-2 text-gray-400 text-sm font-bold;
   }
-}
-
-@utility dark-gradient {
-  @apply bg-gradient-to-b from-[#1A1C20] to-[#08090D];
-}
-
-@utility blue-gradient-dark {
-  @apply bg-gradient-to-b from-[#0e0d1f] to-[#08090D];
-}
-
-@utility border-gradient {
-  @apply bg-gradient-to-b from-[#2f3035] to-[#0f0f16d2];
+  .ai-gradient-text {
+    @apply text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue;
+  }
 }
 
 .hide-scrollbar::-webkit-scrollbar {

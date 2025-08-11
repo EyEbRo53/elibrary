@@ -3,11 +3,12 @@ import { createPublisher, updatePublisher } from "@/actions/publisher";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useUploadThing } from "@/lib/uploadthing";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { MdEdit } from "react-icons/md";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 const PublisherDialog = ({
@@ -19,20 +20,34 @@ const PublisherDialog = ({
   setOpen: (open: boolean) => void;
   publisher: publisher | undefined;
 }) => {
+  const filePickerRef = useRef<HTMLInputElement | null>(null);
   const session = useSession();
   const router = useRouter();
   const image = publisher ? publisher?.image : session.data?.user?.image;
   const name = publisher ? publisher?.name : session.data?.user?.name;
   const dbDescription = publisher?.description;
   const [value, setValue] = useState(name);
+  const [imageUrl, setImageUrl] = useState(image);
   const [description, setDescription] = useState(dbDescription);
   const [loading, setLoading] = useState(false);
 
-  const fixedImage = "/favicon.ico";
+  // upload image
+  const { startUpload, isUploading } = useUploadThing("imageUploader", {
+    onUploadError: () => {
+      toast.error("Something went wrong!");
+    },
+    onClientUploadComplete: async (res) => {
+      const url = res?.[0].ufsUrl;
+      const message = `Uploaded Successfully!`;
+      setImageUrl(url);
+      toast.success(message);
+    },
+  });
+
   const Create = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const values = {
-      image: fixedImage,
+      image: imageUrl,
       name: value,
       description,
     };
@@ -60,6 +75,7 @@ const PublisherDialog = ({
       }
     }
   };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="dark-gradient border-zinc-700 z-[100]">
@@ -70,11 +86,26 @@ const PublisherDialog = ({
         </DialogTitle>
         <form className="space-y-4" onSubmit={Create}>
           <div className="flex justify-center items-center p-4">
-            <div className="flex justify-center items-center rounded-full relative hover:bg-dark-300 group size-30">
-              <input accept="" className="hidden" />
+            <div
+              className="flex justify-center items-center rounded-full relative hover:bg-dark-300 group size-30"
+              onClick={() => filePickerRef.current!.click()}
+            >
+              <input
+                type="file"
+                accept="image/*"
+                className="absolute inset-0 opacity-0 cursor-pointer hidden"
+                onChange={async (e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    await startUpload([file]);
+                  }
+                }}
+                disabled={isUploading}
+                ref={filePickerRef}
+              />
               <MdEdit className="size-8 absolute z-10 text-green-400 opacity-0 group-hover:opacity-100 cursor-pointer" />
               <img
-                src={image || "/favicon.ico"}
+                src={imageUrl || "/favicon.ico"}
                 alt=""
                 className="size-20 cursor-pointer rounded-full"
               />

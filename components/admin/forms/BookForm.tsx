@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useSession } from "next-auth/react";
 
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createBook, updateBook } from "@/actions/book";
+import { extractTextFromPdf, loadPdf } from "@/services/pdfService";
+import { summarizeText } from "@/services/geminiService";
 
 interface Props {
   book: book | undefined;
@@ -40,6 +42,7 @@ const BookForm = ({ book }: Props) => {
   const [loading, setLoading] = useState(false);
   const [isUpload, setIsUpload] = useState(false);
   const [PDFURL, setPDFURL] = useState("");
+  const [pending, startTransition] = useTransition();
 
   const defaultValues = book
     ? {
@@ -59,11 +62,6 @@ const BookForm = ({ book }: Props) => {
     resolver: zodResolver(bookSchema),
     defaultValues: defaultValues,
   });
-
-  const onChangePDF = (url: string) => {
-    setPDFURL(url);
-    form.getFieldState("pdfUrl");
-  };
 
   const onSubmit = async (values: z.infer<typeof bookSchema>) => {
     // console.log(values);
@@ -90,6 +88,38 @@ const BookForm = ({ book }: Props) => {
         toast.error("Something went wrong");
       }
     }
+  };
+
+  const handlePDFSammary = async () => {
+    const pdfurl = form.getValues("pdfUrl");
+    if (!pdfurl) {
+      toast.error("Please upload a PDF or provide a valid PDF URL.");
+      return;
+    }
+
+    startTransition(async () => {
+      setLoading(true);
+      try {
+        const loadedPdf = await loadPdf(pdfurl);
+
+        const text = await extractTextFromPdf(loadedPdf);
+        if (!text.trim()) {
+          throw new Error(
+            "Could not extract any text from the PDF. It might be an image-only document."
+          );
+        }
+
+        const generatedSummary = await summarizeText(text);
+
+        form.setValue("summary", generatedSummary);
+        toast.success("PDF summary generated successfully");
+      } catch (error) {
+        console.error("Error generating PDF summary:", error);
+        toast.error("Failed to generate PDF summary. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    });
   };
 
   return (
@@ -253,9 +283,19 @@ const BookForm = ({ book }: Props) => {
               name={"summary"}
               render={({ field }) => (
                 <FormItem className="flex flex-col gap-1">
-                  <FormLabel className="text-base font-normal">
-                    Book Summary
-                  </FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel className="text-base font-normal">
+                      Book Summary
+                    </FormLabel>
+                    <Button
+                      type="button"
+                      className="mb-2"
+                      onClick={handlePDFSammary}
+                      disabled={loading || !form.getValues("pdfUrl")}
+                    >
+                      Generate PDF Summary
+                    </Button>
+                  </div>
                   <FormControl>
                     <Textarea
                       required

@@ -16,9 +16,7 @@ const GeneratepdfPage = async () => {
         <header className="text-center mb-10">
           <div className="inline-flex items-center justify-center gap-3 mb-4">
             <FaFilePdf className="h-10 w-10 text-primary" />
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue">
-              AI PDF Generator
-            </h1>
+            <h1 className="ai-gradient-text">AI PDF Generator</h1>
           </div>
           <div className="mt-2 max-w-2xl mx-auto text-lg text-gray-100">
             Turn your ideas into professionally formatted PDF documents
