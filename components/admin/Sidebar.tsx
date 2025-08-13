@@ -101,7 +101,9 @@ const Sidebar = ({ publisher }: { publisher: publisher | undefined }) => {
           </Avatar>
 
           <div className="flex flex-col max-md:hidden">
-            <p className="font-semibold">{session?.data?.user?.name}</p>
+            <p className="font-semibold">
+              {session?.data?.user?.name?.split(" ").pop()}
+            </p>
             <p className="text-xs text-gray-300">Publisher</p>
           </div>
         </div>
