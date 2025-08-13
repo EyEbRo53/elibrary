@@ -20,6 +20,5 @@ export const bookSchema = z.object({
   genre: z.string().trim().min(2).max(50),
   coverUrl: z.string().nonempty(),
   pdfUrl: z.string().nonempty(),
-  summary: z.string().trim().min(10),
   status: z.enum(["free", "pro"]),
 });

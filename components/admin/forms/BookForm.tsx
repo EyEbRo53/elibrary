@@ -53,7 +53,6 @@ const BookForm = ({ book }: Props) => {
         genre: "",
         coverUrl: "",
         pdfUrl: "",
-        summary: "",
         status: "pro" as "free" | "pro",
       };
   const form = useForm<z.infer<typeof bookSchema>>({
