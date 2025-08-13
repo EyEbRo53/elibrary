@@ -30,7 +30,9 @@ const RootHome = async ({
     <div className="space-y-6 mb-10">
       <Hero />
       <div className="flex justify-between gap-4">
-        <h1 className="font-bold text-4xl text-primary mt-2">E-Library</h1>
+        <h1 className="font-bold text-xl lg:text-4xl text-primary mt-2">
+          E-Library
+        </h1>
         <Filters />
       </div>
       <div className="book-list">
