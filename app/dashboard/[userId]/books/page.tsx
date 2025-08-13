@@ -6,8 +6,10 @@ import { db } from "@/drizzle";
 import Link from "next/link";
 
 const Books = async () => {
-  const books = await db.query.books.findMany();
   const session = await auth();
+  const books = await db.query.books.findMany({
+    where: (books, { eq }) => eq(books.userId, session?.user?.id || ""),
+  });
 
   return (
     <section className="w-full rounded-2xl mt-2 bg-dark-100">
