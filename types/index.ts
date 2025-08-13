@@ -8,7 +8,6 @@ interface book {
   coverUrl: string;
   pdfUrl: string;
   description: string;
-  summary: string;
   user?: user;
   publisher?: publisher;
 }
@@ -44,32 +43,4 @@ interface Job {
   topic: string;
   html: string | null;
   customCss: string | null;
-}
-
-interface PDFPageViewport {
-  width: number;
-  height: number;
-}
-
-interface RenderTask {
-  promise: Promise<void>;
-}
-
-interface TextContent {
-  items: { str: string }[];
-}
-
-interface PDFDocumentProxy {
-  numPages: number;
-  getPage: (pageNumber: number) => Promise<PDFPageProxy>;
-  destroy: () => void;
-}
-
-interface PDFPageProxy {
-  getViewport: (options: { scale: number }) => PDFPageViewport;
-  render: (params: {
-    canvasContext: CanvasRenderingContext2D;
-    viewport: PDFPageViewport;
-  }) => RenderTask;
-  getTextContent: () => Promise<TextContent>;
 }
