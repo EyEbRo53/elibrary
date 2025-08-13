@@ -61,29 +61,32 @@ const BookDetails = async ({
     <div className="my-5 w-full space-y-8">
       <Profile
         publisherData={publisherData}
-        Books={<BookTable books={userBooks} />}
+        Books={
+          <>
+            <div className="block space-y-4">
+              <div className="flex justify-between items-center">
+                <h1 className="font-bold text-2xl md:text-3xl lg:text-4xl text-primary my-4">
+                  {publisher?.name} Library
+                </h1>
+                <Filters />
+              </div>
+              <div className="book-list">
+                {userBooks.length === 0 && (
+                  <h3 className="flex justify-center items-center text-xl font-extrabold">
+                    No Published Books!
+                  </h3>
+                )}
+                {userBooks.map((book) => (
+                  <BookCard book={book} key={book.id} />
+                ))}
+              </div>
+            </div>
+            {totalBooks > 10 && (
+              <Pagination noOfBooks={totalBooks} pageSize={pageSize} />
+            )}
+          </>
+        }
       />
-      <div className="block space-y-4">
-        <div className="flex justify-between items-center">
-          <h1 className="font-bold text-2xl md:text-3xl lg:text-4xl text-primary my-4">
-            {publisher?.name} Library
-          </h1>
-          <Filters />
-        </div>
-        <div className="book-list">
-          {userBooks.length === 0 && (
-            <h3 className="flex justify-center items-center text-xl font-extrabold">
-              No Published Books!
-            </h3>
-          )}
-          {userBooks.map((book) => (
-            <BookCard book={book} key={book.id} />
-          ))}
-        </div>
-      </div>
-      {totalBooks > 10 && (
-        <Pagination noOfBooks={totalBooks} pageSize={pageSize} />
-      )}
     </div>
   );
 };
