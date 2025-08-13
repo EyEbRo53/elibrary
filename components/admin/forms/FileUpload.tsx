@@ -97,19 +97,17 @@ const FileUpload = ({
       {/* File View */}
       {url !== "" && (
         <div className="flex items-start space-x-2 relative w-fit">
-          {isUpload && (
-            <div className="absolute items-center justify-center right-0 top-2">
-              <Button
-                type="button"
-                variant="destructive"
-                size="sm"
-                disabled={pending || disabled}
-                onClick={Delete}
-              >
-                <MdDelete className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
+          <div className="absolute items-center justify-center right-0 top-2">
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              disabled={pending || disabled}
+              onClick={Delete}
+            >
+              <MdDelete className="h-4 w-4" />
+            </Button>
+          </div>
           <div className="overflow-x-auto flex gap-1 scrollbar">
             {type === "image" && (
               <Image
