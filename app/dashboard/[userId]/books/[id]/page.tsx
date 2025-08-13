@@ -6,7 +6,7 @@ const NewBooks = async ({ params }: { params: Promise<{ id: string }> }) => {
   const newId = id === "new" ? null : id;
 
   const book = await db.query.books.findFirst({
-    where: (book, { eq }) => eq(book.id, newId!),
+    where: (book, { eq }) => eq(book.id, newId || ""),
   });
   return (
     <section className="w-full">
