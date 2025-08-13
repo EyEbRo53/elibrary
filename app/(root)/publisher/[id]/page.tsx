@@ -1,14 +1,11 @@
 import { GetBooks } from "@/actions/GetBooks";
 import BookCard from "@/components/home/BookCard";
 import Filters from "@/components/global/Filters";
-import PublisherDetails from "@/components/publisher/PublisherDetails";
 import { db } from "@/drizzle";
-
-import { redirect } from "next/navigation";
 import Pagination from "@/components/global/Pagination";
 import Profile from "@/components/global/Profile";
-import { auth } from "@/auth";
-import BookTable from "@/components/global/BookTable";
+
+import { redirect } from "next/navigation";
 
 const BookDetails = async ({
   params,
@@ -25,7 +22,6 @@ const BookDetails = async ({
   const id = (await params).id;
   const searchparams = await searchParams;
   const pageSize = 16;
-  const session = await auth();
 
   const books = await GetBooks(
     searchparams.page,
@@ -40,7 +36,7 @@ const BookDetails = async ({
     where: (user, { eq }) => eq(user.userId, id || ""),
   });
 
-  const userBooks = books.filter((book) => book.userId === session?.user?.id);
+  const userBooks = books.filter((book) => book.userId === id);
   const totalBooks = userBooks.length;
 
   const publisherData = {
@@ -49,7 +45,7 @@ const BookDetails = async ({
     description: publisher?.description ?? "",
     stats: {
       books: userBooks.length,
-      downloads: 486500,
+      downloads: 48699,
     },
   };
 

@@ -11,7 +11,6 @@ const BookOverview = ({ book }: Props) => {
     <div className="book-overview">
       <div className="flex flex-1 flex-col gap-2 xl:w-[45%] mt-20 xl:mt-0">
         <h1>{book.title}</h1>
-
         <div className="book-info">
           <Link href={`/publisher/${book.user?.id}`}>
             By{" "}
@@ -19,18 +18,15 @@ const BookOverview = ({ book }: Props) => {
               {book?.user?.name}
             </span>
           </Link>
-
           <p>
             Genre{" "}
             <span className="font-semibold text-primary">{book.genre}</span>
           </p>
-
           <div className="flex flex-row gap-1">
             <MdStar className="text-yellow-400 size-6" />
-            <p>2</p>
+            <p>4</p>
           </div>
         </div>
-
         <p className="book-description">{book.description}</p>
       </div>
 
@@ -38,7 +34,6 @@ const BookOverview = ({ book }: Props) => {
         <div className="relative pb-10">
           {/* <BookCover coverImage={book.coverUrl} /> */}
           <BookCover coverImage={book.coverUrl} />
-
           <div className="absolute top-15 opacity-20 left-14 rotate-[20deg] hidden md:block">
             {/* <BookCover coverImage={book.coverUrl} /> */}
             <BookCover coverImage={book.coverUrl} />
