@@ -97,7 +97,7 @@ const FileUpload = ({
       {/* File View */}
       {url !== "" && (
         <div className="flex items-start space-x-2 relative w-fit">
-          <div className="absolute items-center justify-center right-0 top-2">
+          <div className="absolute items-center justify-center right-0 top-2 opacity-0 hover:opacity-100 transition-opacity">
             <Button
               type="button"
               variant="destructive"

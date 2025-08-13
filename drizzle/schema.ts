@@ -71,7 +71,6 @@ export const books = pgTable("books", {
   coverUrl: text("cover_url").notNull(),
   pdfUrl: text("pdf_url").notNull(),
   description: text("description").notNull(),
-  summary: varchar("summary").notNull(),
   status: text("status").$type<"free" | "pro">().default("pro"), // ✅ fixed here
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
