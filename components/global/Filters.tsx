@@ -34,7 +34,7 @@ const Filters = () => {
       <Search />
       <Select onValueChange={(e) => createPageUrl(e)} defaultValue={sort || ""}>
         <SelectTrigger>
-          <SelectValue placeholder="Select Category" />
+          <SelectValue placeholder="Select Filter" />
         </SelectTrigger>
         <SelectContent className="border-zinc-800">
           <SelectItem value="Clear">Clear Sort</SelectItem>
