@@ -92,18 +92,16 @@ const Sidebar = ({ publisher }: { publisher: publisher | undefined }) => {
         <div className="user cursor-pointer" onClick={avatarClick}>
           <Avatar className="size-10">
             <AvatarImage
-              alt={session?.data?.user?.name || ""}
-              src={session?.data?.user?.image || ""}
+              alt={publisher?.name || ""}
+              src={publisher?.image || ""}
             />
             <AvatarFallback className="bg-gradient-to-br from-primary to-blue">
-              {getInitials(session?.data?.user?.name || "IN")}
+              {getInitials(publisher?.name || "IN")}
             </AvatarFallback>
           </Avatar>
 
           <div className="flex flex-col max-md:hidden">
-            <p className="font-semibold">
-              {session?.data?.user?.name?.split(" ").pop()}
-            </p>
+            <p className="font-semibold">{publisher?.name?.split(" ").pop()}</p>
             <p className="text-xs text-gray-300">Publisher</p>
           </div>
         </div>
