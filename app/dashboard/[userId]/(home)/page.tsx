@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import BookTable from "@/components/global/BookTable";
+import BookTableWrapper from "@/components/global/BookTableWrapper";
 import Profile from "@/components/global/Profile";
 import { db } from "@/drizzle";
 
@@ -25,7 +25,7 @@ const DashboadHome = async () => {
   return (
     <Profile
       publisherData={publisherData}
-      Books={<BookTable books={books} />}
+      Books={<BookTableWrapper books={books} />}
     />
   );
 };

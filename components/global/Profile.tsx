@@ -1,3 +1,5 @@
+"use client";
+
 import { BookIcon, DownloadIcon } from "lucide-react";
 import StatCard from "./StatCard";
 
@@ -33,7 +35,7 @@ const Profile = ({
           <div className="w-32 h-32 md:w-40 md:h-40 mx-auto -mt-20 md:-mt-24 border-8 border-white dark:border-slate-800 rounded-full overflow-hidden shadow-lg bg-gradient-to-br from-primary to-blue-500">
             <img
               className="object-cover w-full h-full"
-              src={publisherData.imageUrl || ""}
+              src={publisherData.imageUrl || "/placeholder.png"}
               alt={`Profile of ${publisherData.name}`}
             />
           </div>

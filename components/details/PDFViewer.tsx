@@ -26,14 +26,18 @@ const PDFViewer = ({
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [open, setOpen] = useState(false);
+  const [outline, setOutline] = useState<any[] | null>(null);
+  const [outlineError, setOutlineError] = useState<string | null>(null);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
-    setNumPages(status === "free" ? numPages : 10);
+    // free users only get 10 pages
+    const allowedPages = status === "free" ? Math.min(numPages, 10) : numPages;
+    setNumPages(allowedPages);
     setPageNumber(1);
   }
 
   function changePage(offset: number) {
-    setPageNumber((prevPageNumber) => prevPageNumber + offset);
+    setPageNumber((prev) => Math.max(1, Math.min(prev + offset, numPages)));
   }
 
   function previousPage() {
@@ -45,7 +49,9 @@ const PDFViewer = ({
   }
 
   function highlightPattern(text: string, pattern: string) {
-    return text.replace(pattern, (value) => `<mark>${value}</mark>`);
+    if (!pattern.trim()) return text;
+    const regex = new RegExp(`(${pattern})`, "gi");
+    return text.replace(regex, `<mark>$1</mark>`);
   }
 
   const [searchText, setSearchText] = useState("");
@@ -60,7 +66,9 @@ const PDFViewer = ({
   }
 
   function onItemClick({ pageNumber: itemPageNumber }: { pageNumber: number }) {
-    setPageNumber(itemPageNumber);
+    if (itemPageNumber > 0 && itemPageNumber <= numPages) {
+      setPageNumber(itemPageNumber);
+    }
   }
 
   return (
@@ -71,9 +79,11 @@ const PDFViewer = ({
         <Document
           file={url}
           onLoadSuccess={onDocumentLoadSuccess}
+          onLoadError={(err) =>
+            console.warn("Document load error:", err.message)
+          }
           loading={<Loading />}
-          onItemClick={status === "pro" ? () => {} : onItemClick}
-          className={"border p-2 border-dark-400 rounded-md"}
+          className="border p-2 border-dark-400 rounded-md"
         >
           {numPages > 0 && (
             <div className="flex items-center gap-2 mb-1">
@@ -88,6 +98,7 @@ const PDFViewer = ({
               />
             </div>
           )}
+
           <Button
             className={cn(
               "absolute top-14 z-10 group-hover:opacity-100 opacity-0",
@@ -98,15 +109,39 @@ const PDFViewer = ({
           >
             Open Table of Content
           </Button>
-          <div className={cn("flex gap-2 min-h-fit rounded-md")}>
+
+          <div className="flex gap-2 min-h-fit rounded-md">
             {open && (
-              <div className="ml-2">
-                <h2 className="text-xl text-primary">Table of Content</h2>
-                <Outline onItemClick={onItemClick} />
+              <div className="ml-2 w-64">
+                <h2 className="text-xl text-primary mb-2">Table of Content</h2>
+                <Outline
+                  onItemClick={onItemClick}
+                  onLoadSuccess={setOutline}
+                  onLoadError={() =>
+                    setOutlineError("No table of contents found.")
+                  }
+                />
+                {outlineError && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {outlineError}
+                  </p>
+                )}
               </div>
             )}
-            <Page pageNumber={pageNumber} customTextRenderer={textRenderer} />
+
+            {/* ✅ Only render Page when we know numPages */}
+            {numPages > 0 && pageNumber <= numPages && (
+              <Page
+                key={pageNumber} // forces rerender when page changes
+                pageNumber={pageNumber}
+                customTextRenderer={textRenderer}
+                onLoadError={(err) =>
+                  console.warn("Page load error:", err.message)
+                }
+              />
+            )}
           </div>
+
           {numPages > 0 && (
             <p className="flex justify-center mt-4">
               Page
@@ -117,6 +152,7 @@ const PDFViewer = ({
             </p>
           )}
         </Document>
+
         {numPages > 0 && (
           <div className="absolute bottom-4 right-[40%] gap-4 z-10 hidden group-hover:flex">
             <Button

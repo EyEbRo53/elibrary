@@ -3,8 +3,12 @@ export const createPdfHTML = async (
   customCss: string
 ): Promise<string> => {
   try {
-    const TOKEN = "2SafpAFc0ApqLuC642afb8cf7b74a484c967e748052289050";
-    const url = `https://production-sfo.browserless.io/pdf?token=${TOKEN}`;
+    const TOKEN = process.env.BROWSERLESS_TOKEN || "";
+    const BASE =
+      process.env.BROWSERLESS_URL || "https://production-sfo.browserless.io";
+    const url = `${BASE.replace(/\/$/, "")}/pdf${
+      TOKEN ? `?token=${TOKEN}` : ""
+    }`;
     const headers = {
       "Cache-Control": "no-cache",
       "Content-Type": "application/json",

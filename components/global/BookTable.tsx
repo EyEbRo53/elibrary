@@ -25,6 +25,8 @@ interface Props {
 
 const BookTable = ({ books }: Props) => {
   const session = useSession();
+  const [loading, setLoading] = useState(false);
+
   if (books.length === 0) {
     return (
       <div className="flex justify-center items-center text-2xl font-bold text-primary mb-2">
@@ -33,7 +35,6 @@ const BookTable = ({ books }: Props) => {
     );
   }
 
-  const [loading, setLoading] = useState(false);
   const onDelete = async (id: string, image: string) => {
     setLoading(true);
     const result = await deleteBook(id, image);
